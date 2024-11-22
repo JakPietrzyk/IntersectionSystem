@@ -19,4 +19,8 @@ public class RoadLine {
     public int getVehicleCount() {
         return waitingVehicles.size();
     }
+
+    public Vehicle peekFirstVehicle() {
+        return waitingVehicles.peek();
+    }
 }

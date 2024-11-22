@@ -1,5 +1,5 @@
 package org.app.Intersection.Constants;
 
-public enum Direction {
+public enum CompassDirection {
     NORTH, EAST, SOUTH, WEST
 }

@@ -46,4 +46,8 @@ public class Road {
                 break;
         }
     }
+
+    public Vehicle peekFirstVehicle() {
+        return roadLine.peekFirstVehicle();
+    }
 }

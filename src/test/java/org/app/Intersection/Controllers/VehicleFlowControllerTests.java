@@ -1,6 +1,6 @@
 package org.app.Intersection.Controllers;
 
-import org.app.Intersection.Constants.Direction;
+import org.app.Intersection.Constants.CompassDirection;
 import org.app.Intersection.Components.Road;
 import org.app.Intersection.Models.Vehicle;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +24,7 @@ public class VehicleFlowControllerTests {
 
     @Test
     public void shouldRemoveCarWhenGreenLight() {
-        roads.getFirst().addVehicleToRoadLine(new Vehicle("1", Direction.NORTH, Direction.SOUTH));
+        roads.getFirst().addVehicleToRoadLine(new Vehicle("1", CompassDirection.NORTH, CompassDirection.SOUTH));
         roads.getFirst().setGreenTrafficLight();
         var vehicleFlowController = new VehicleFlowController(roads);
         vehicleFlowController.makeStep();
@@ -34,7 +34,7 @@ public class VehicleFlowControllerTests {
 
     @Test
     public void shouldNotRemoveCarWhenRedLight() {
-        roads.getFirst().addVehicleToRoadLine(new Vehicle("1", Direction.NORTH, Direction.SOUTH));
+        roads.getFirst().addVehicleToRoadLine(new Vehicle("1", CompassDirection.NORTH, CompassDirection.SOUTH));
         var vehicleFlowController = new VehicleFlowController(roads);
         vehicleFlowController.makeStep();
 
