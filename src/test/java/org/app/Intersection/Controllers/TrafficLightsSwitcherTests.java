@@ -1,8 +1,11 @@
 package org.app.Intersection.Controllers;
 
+import org.app.Intersection.Components.TrafficLights;
 import org.app.Intersection.Constants.CompassDirection;
 import org.app.Intersection.Constants.LightColor;
 import org.app.Intersection.Components.Road;
+import org.app.Intersection.Constants.TurnDirection;
+import org.app.Intersection.RoadLines.BasicRoadLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,23 +18,31 @@ public class TrafficLightsSwitcherTests {
     @BeforeEach
     public void setUp() {
         this.roads = Map.of(
-                CompassDirection.NORTH, new Road(),
-                CompassDirection.EAST, new Road(),
-                CompassDirection.SOUTH, new Road(),
-                CompassDirection.WEST, new Road()
+                CompassDirection.NORTH, new Road(Map.of(
+                        new BasicRoadLine(), new TrafficLights()
+                )),
+                CompassDirection.EAST, new Road(Map.of(
+                        new BasicRoadLine(), new TrafficLights()
+                )),
+                CompassDirection.SOUTH, new Road(Map.of(
+                        new BasicRoadLine(), new TrafficLights()
+                )),
+                CompassDirection.WEST, new Road(Map.of(
+                        new BasicRoadLine(), new TrafficLights()
+                ))
         );
     }
 
     @Test
     public void shouldSetUpLights() {
-        roads.values().forEach(road -> Assertions.assertFalse(road.isGreenTrafficLight(), "Traffic light should initially be red"));
+        roads.values().forEach(road -> Assertions.assertFalse(road.isGreenTrafficLight(TurnDirection.STRAIGHT)));
 
         var trafficLightsSwitcher = new TrafficLightsSwitcher(roads);
 
-        Assertions.assertEquals(LightColor.GREEN, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.NORTH), "North should have green light");
-        Assertions.assertEquals(LightColor.GREEN, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.SOUTH), "South should have green light");
-        Assertions.assertEquals(LightColor.RED, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.EAST), "East should have red light");
-        Assertions.assertEquals(LightColor.RED, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.WEST), "West should have red light");
+        Assertions.assertEquals(LightColor.GREEN, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.NORTH, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.GREEN, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.RED, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.EAST, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.RED, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.WEST, TurnDirection.STRAIGHT));
     }
 
 

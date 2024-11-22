@@ -1,6 +1,7 @@
 package org.app.Intersection.Components;
 
 import org.app.Intersection.Constants.CompassDirection;
+import org.app.Intersection.Constants.TurnDirection;
 import org.app.Intersection.Controllers.LightsFlowController;
 import org.app.Intersection.Controllers.TrafficLightsSwitcher;
 import org.app.Intersection.Controllers.VehicleFlowController;
@@ -28,7 +29,7 @@ public class Intersection {
         roads.get(vehicle.getStartRoad()).addVehicleToRoadLine(vehicle);
     }
 
-    public int getRoadVehicleCount(CompassDirection compassDirection) {
-        return roads.get(compassDirection).getVehicleCount();
+    public int getRoadVehicleCount(CompassDirection compassDirection, TurnDirection turnDirection) {
+        return roads.get(compassDirection).getVehicleCount(turnDirection);
     }
 }
