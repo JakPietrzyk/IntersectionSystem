@@ -22,6 +22,10 @@ public class Road {
         firstRoadLine.ifPresent(roadLine -> roadLineLights.get(roadLine).setGreenLight());
     }
 
+    public void setRedTrafficLightForAllRoadLines() {
+        roadLineLights.values().forEach(TrafficLights::setRedLight);
+    }
+
     private Optional<RoadLine> getFirstRoadLineForDirection(TurnDirection direction) {
         return roadLineLights.keySet()
                 .stream()

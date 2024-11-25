@@ -5,6 +5,7 @@ import org.app.Intersection.Constants.LightColor;
 import org.app.Intersection.Components.Road;
 import org.app.Intersection.Constants.TurnDirection;
 
+import java.util.EnumSet;
 import java.util.Map;
 
 public class TrafficLightsSwitcher {
@@ -24,7 +25,15 @@ public class TrafficLightsSwitcher {
         return roads.get(compassDirection).getCurrentLightColor(turnDirection);
     }
 
-    public void switchLights(TurnDirection turnDirection) {
+    public void switchLightsToRedForCompassDirections(EnumSet<CompassDirection> compassDirections) {
+        compassDirections.forEach(compassDirection -> roads.get(compassDirection).setRedTrafficLightForAllRoadLines());
+    }
+
+    public void switchOppositeLights(TurnDirection turnDirection) {
         roads.values().forEach(road -> road.changeLightColor(turnDirection));
+    }
+
+    public void switchLightsOnCompassDirectionForTurnDirection(EnumSet<CompassDirection> compassDirection, TurnDirection turnDirection) {
+        compassDirection.forEach(direction -> roads.get(direction).changeLightColor(turnDirection));
     }
 }

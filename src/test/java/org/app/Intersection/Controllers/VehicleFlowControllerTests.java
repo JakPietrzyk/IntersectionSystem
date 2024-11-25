@@ -5,7 +5,8 @@ import org.app.Intersection.Constants.CompassDirection;
 import org.app.Intersection.Components.Road;
 import org.app.Intersection.Constants.TurnDirection;
 import org.app.Intersection.Models.Vehicle;
-import org.app.Intersection.RoadLines.BasicRoadLine;
+import org.app.Intersection.RoadLines.LeftTurnRoadLine;
+import org.app.Intersection.RoadLines.StraightOrRightRoadLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,16 +21,20 @@ public class VehicleFlowControllerTests {
     public void setUp() {
         this.roads = List.of(
                 new Road(Map.of(
-                        new BasicRoadLine(), new TrafficLights()
+                        new LeftTurnRoadLine(), new TrafficLights(),
+                        new StraightOrRightRoadLine(), new TrafficLights()
                 )),
                 new Road(Map.of(
-                        new BasicRoadLine(), new TrafficLights()
+                        new LeftTurnRoadLine(), new TrafficLights(),
+                        new StraightOrRightRoadLine(), new TrafficLights()
                 )),
                 new Road(Map.of(
-                        new BasicRoadLine(), new TrafficLights()
+                        new LeftTurnRoadLine(), new TrafficLights(),
+                        new StraightOrRightRoadLine(), new TrafficLights()
                 )),
                 new Road(Map.of(
-                        new BasicRoadLine(), new TrafficLights()
+                        new LeftTurnRoadLine(), new TrafficLights(),
+                        new StraightOrRightRoadLine(), new TrafficLights()
                 ))
         );
     }
