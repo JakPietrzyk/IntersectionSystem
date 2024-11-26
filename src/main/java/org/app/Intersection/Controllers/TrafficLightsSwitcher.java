@@ -29,11 +29,20 @@ public class TrafficLightsSwitcher {
         compassDirections.forEach(compassDirection -> roads.get(compassDirection).setRedTrafficLightForAllRoadLines());
     }
 
+    public void switchLightsToGreenForDirections(CompassDirection compassDirection, TurnDirection turnDirection) {
+        roads.get(compassDirection).setGreenTrafficLight(turnDirection);
+    }
+
     public void switchOppositeLights(TurnDirection turnDirection) {
         roads.values().forEach(road -> road.changeLightColor(turnDirection));
     }
 
-    public void switchLightsOnCompassDirectionForTurnDirection(EnumSet<CompassDirection> compassDirection, TurnDirection turnDirection) {
-        compassDirection.forEach(direction -> roads.get(direction).changeLightColor(turnDirection));
+    public void switchLightsOnCompassDirectionForTurnDirection(EnumSet<CompassDirection> compassDirections, EnumSet<TurnDirection> turnDirections) {
+        compassDirections.forEach(direction ->
+                turnDirections.forEach(turn ->
+                        roads.get(direction).changeLightColor(turn)
+                )
+        );
     }
+
 }

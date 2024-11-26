@@ -1,18 +1,20 @@
 package org.app.Intersection.Controllers.LightControllers;
 
+import org.app.Intersection.Components.Road;
 import org.app.Intersection.Constants.CompassDirection;
+import org.app.Intersection.Constants.LightColor;
 import org.app.Intersection.Constants.TurnDirection;
 import org.app.Intersection.Controllers.TrafficConfig;
-import org.app.Intersection.Controllers.TrafficLightsSwitcher;
 
 import java.security.InvalidParameterException;
 import java.util.EnumSet;
+import java.util.Map;
 
 public class SimpleLightsFlowController extends LightsController {
 
-    public SimpleLightsFlowController(TrafficLightsSwitcher lightsSwitcher) {
-        super(lightsSwitcher);
-        this.currentTurnDirection = TurnDirection.STRAIGHT;
+    public SimpleLightsFlowController(Map<CompassDirection, Road> roads) {
+        super(roads);
+        this.currentTurnDirection = EnumSet.of(TurnDirection.STRAIGHT);
         this.currentCompassDirections = EnumSet.of(CompassDirection.SOUTH, CompassDirection.NORTH);
     }
 
@@ -21,16 +23,16 @@ public class SimpleLightsFlowController extends LightsController {
         stepCounter++;
 
         if(stepCounter > TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH) {
-            if(currentTurnDirection == TurnDirection.STRAIGHT) {
+            if(currentTurnDirection.contains(TurnDirection.STRAIGHT)) {
                 lightsSwitcher.switchLightsOnCompassDirectionForTurnDirection(currentCompassDirections, currentTurnDirection);
 
-                currentTurnDirection = TurnDirection.LEFT;
+                currentTurnDirection = EnumSet.of(TurnDirection.LEFT);
 
                 lightsSwitcher.switchLightsOnCompassDirectionForTurnDirection(currentCompassDirections , currentTurnDirection);
                 stepCounter = 0;
             }
-            else if(currentTurnDirection == TurnDirection.LEFT) {
-                currentTurnDirection = TurnDirection.STRAIGHT;
+            else if(currentTurnDirection.contains(TurnDirection.LEFT)) {
+                currentTurnDirection = EnumSet.of(TurnDirection.STRAIGHT);
                 lightsSwitcher.switchLightsToRedForCompassDirections(currentCompassDirections);
 
                 currentCompassDirections = getOppositeCompassDirections();
@@ -48,5 +50,9 @@ public class SimpleLightsFlowController extends LightsController {
             return EnumSet.of(CompassDirection.SOUTH, CompassDirection.NORTH);
         }
         throw new InvalidParameterException();
+    }
+
+    public LightColor getCurrentLightColor(CompassDirection compassDirection, TurnDirection turnDirection) {
+        return this.lightsSwitcher.getCurrentTrafficLight(compassDirection, turnDirection);
     }
 }

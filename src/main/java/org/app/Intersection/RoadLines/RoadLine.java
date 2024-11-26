@@ -27,6 +27,10 @@ public abstract class RoadLine {
         return waitingVehicles.size();
     }
 
+    public final int getVehicleCountForTurnDirection(TurnDirection turnDirection) {
+        return (int) waitingVehicles.stream().filter(vehicle -> vehicle.getTurnDirection() == turnDirection).count();
+    }
+
     public final boolean isEmpty() {
         return waitingVehicles.isEmpty();
     }

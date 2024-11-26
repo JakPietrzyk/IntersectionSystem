@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.app.Intersection.Controllers.TrafficConfigForTests.STEPS_BEFORE_LIGHTS_SWITCH;
+import static org.app.Intersection.Controllers.TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH;
 
-public class IntersectionTests {
+class IntersectionTests {
     Map<CompassDirection, Road> roads;
     Intersection intersection;
     @BeforeEach

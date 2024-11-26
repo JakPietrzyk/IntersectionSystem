@@ -1,12 +1,10 @@
-package org.app.Intersection.Controllers;
+package org.app.Intersection.Controllers.LightControllers;
 
 import org.app.Intersection.Components.Road;
 import org.app.Intersection.Components.TrafficLights;
 import org.app.Intersection.Constants.CompassDirection;
 import org.app.Intersection.Constants.LightColor;
 import org.app.Intersection.Constants.TurnDirection;
-import org.app.Intersection.Controllers.LightControllers.LightsController;
-import org.app.Intersection.Controllers.LightControllers.SimpleLightsFlowController;
 import org.app.Intersection.RoadLines.LeftTurnRoadLine;
 import org.app.Intersection.RoadLines.StraightOrRightRoadLine;
 import org.junit.jupiter.api.Assertions;
@@ -15,9 +13,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public class SimpleLightsFlowControllerTests {
-    private LightsController simpleLightsFlowController;
-    private TrafficLightsSwitcher trafficLightsSwitcher;
+import static org.app.Intersection.Controllers.TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH;
+
+class SimpleLightsFlowControllerTests {
+    private SimpleLightsFlowController simpleLightsFlowController;
 
     @BeforeEach
     public void setUp() {
@@ -39,18 +38,17 @@ public class SimpleLightsFlowControllerTests {
                         new StraightOrRightRoadLine(), new TrafficLights()
                 ))
         );
-        this.trafficLightsSwitcher = new TrafficLightsSwitcher(roads);
-        this.simpleLightsFlowController = new SimpleLightsFlowController(this.trafficLightsSwitcher);
+        this.simpleLightsFlowController = new SimpleLightsFlowController(roads);
     }
 
     @Test
-    public void shouldSwitchLightsAfterDefinedSteps() {
-        Assertions.assertEquals(LightColor.GREEN, this.trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
+    void shouldSwitchLightsAfterDefinedSteps() {
+        Assertions.assertEquals(LightColor.GREEN, this.simpleLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
 
-        for(int i = 0; i < TrafficConfigForTests.STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
+        for(int i = 0; i < STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
             simpleLightsFlowController.makeStep();
         }
 
-        Assertions.assertEquals(LightColor.RED, this.trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.RED, this.simpleLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
     }
 }

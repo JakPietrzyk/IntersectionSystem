@@ -5,6 +5,7 @@ import org.app.Intersection.Constants.TurnDirection;
 import org.app.Intersection.Models.Vehicle;
 import org.app.Intersection.RoadLines.RoadLine;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -86,5 +87,9 @@ public class Road {
 
     public Map<RoadLine, TrafficLights> getRoadLineLights() {
         return roadLineLights;
+    }
+
+    public EnumSet<TurnDirection> getAllowedDirectionsForTurn(TurnDirection primaryTurn) {
+        return getFirstRoadLineForDirection(primaryTurn).get().getAllowedDirections();
     }
 }
