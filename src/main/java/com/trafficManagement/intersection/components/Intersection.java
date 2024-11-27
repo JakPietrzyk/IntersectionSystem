@@ -2,9 +2,9 @@ package com.trafficManagement.intersection.components;
 
 import com.trafficManagement.intersection.constants.CompassDirection;
 import com.trafficManagement.intersection.constants.TurnDirection;
+import com.trafficManagement.intersection.controllers.VehicleFlowController;
 import com.trafficManagement.intersection.controllers.lightControllers.LightsController;
 import com.trafficManagement.intersection.controllers.lightControllers.SimpleLightsFlowController;
-import com.trafficManagement.intersection.controllers.VehicleFlowController;
 import com.trafficManagement.intersection.models.Vehicle;
 
 import java.util.Map;

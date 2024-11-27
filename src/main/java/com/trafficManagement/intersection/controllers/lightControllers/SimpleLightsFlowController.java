@@ -14,42 +14,53 @@ public class SimpleLightsFlowController extends LightsController {
 
     public SimpleLightsFlowController(Map<CompassDirection, Road> roads) {
         super(roads);
+
+        validateRoadsMap(roads);
+
         this.currentTurnDirection = EnumSet.of(TurnDirection.STRAIGHT);
         this.currentCompassDirections = EnumSet.of(CompassDirection.SOUTH, CompassDirection.NORTH);
     }
+
+    private void validateRoadsMap(Map<CompassDirection, Road> roads) {
+        EnumSet<CompassDirection> providedDirections = EnumSet.copyOf(roads.keySet());
+
+        EnumSet<CompassDirection> missingDirections = EnumSet.complementOf(providedDirections);
+        if(!missingDirections.isEmpty()) {
+            throw new IllegalArgumentException("Roads map is missing directions: " + missingDirections);
+        }
+    }
+
 
     @Override
     public void makeStep() {
         stepCounter++;
 
-        if(stepCounter > TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH) {
-            if(currentTurnDirection.contains(TurnDirection.STRAIGHT)) {
-                lightsSwitcher.switchLightsOnCompassDirectionForTurnDirection(currentCompassDirections, currentTurnDirection);
+        if (stepCounter > TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH) {
+            if (currentTurnDirection.contains(TurnDirection.STRAIGHT)) {
+                lightsSwitcher.switchLightsForDirections(currentCompassDirections, currentTurnDirection);
 
                 currentTurnDirection = EnumSet.of(TurnDirection.LEFT);
 
-                lightsSwitcher.switchLightsOnCompassDirectionForTurnDirection(currentCompassDirections , currentTurnDirection);
+                lightsSwitcher.switchLightsForDirections(currentCompassDirections, currentTurnDirection);
                 stepCounter = 0;
-            }
-            else if(currentTurnDirection.contains(TurnDirection.LEFT)) {
+            } else if (currentTurnDirection.contains(TurnDirection.LEFT)) {
                 currentTurnDirection = EnumSet.of(TurnDirection.STRAIGHT);
                 lightsSwitcher.switchLightsToRedForCompassDirections(currentCompassDirections);
 
                 currentCompassDirections = getOppositeCompassDirections();
-                lightsSwitcher.switchLightsOnCompassDirectionForTurnDirection(currentCompassDirections, currentTurnDirection);
+                lightsSwitcher.switchLightsForDirections(currentCompassDirections, currentTurnDirection);
                 stepCounter = 0;
             }
         }
     }
 
     private EnumSet<CompassDirection> getOppositeCompassDirections() {
-        if(currentCompassDirections.contains(CompassDirection.SOUTH) && currentCompassDirections.contains(CompassDirection.NORTH)) {
+        if (currentCompassDirections.contains(CompassDirection.SOUTH) && currentCompassDirections.contains(CompassDirection.NORTH)) {
             return EnumSet.of(CompassDirection.EAST, CompassDirection.WEST);
-        }
-        else if(currentCompassDirections.contains(CompassDirection.WEST) && currentCompassDirections.contains(CompassDirection.EAST)) {
+        } else if (currentCompassDirections.contains(CompassDirection.WEST) && currentCompassDirections.contains(CompassDirection.EAST)) {
             return EnumSet.of(CompassDirection.SOUTH, CompassDirection.NORTH);
         }
-        throw new InvalidParameterException();
+        throw new InvalidParameterException("Unexpected compass directions were provided");
     }
 
     public LightColor getCurrentLightColor(CompassDirection compassDirection, TurnDirection turnDirection) {

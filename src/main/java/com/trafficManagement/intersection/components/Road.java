@@ -1,13 +1,14 @@
 package com.trafficManagement.intersection.components;
 
+import com.trafficManagement.intersection.components.roadLines.RoadLine;
 import com.trafficManagement.intersection.constants.LightColor;
 import com.trafficManagement.intersection.constants.TurnDirection;
 import com.trafficManagement.intersection.models.Vehicle;
-import com.trafficManagement.intersection.components.roadLines.RoadLine;
 
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Road {
     private final Map<RoadLine, TrafficLights> roadLineLights;
@@ -18,9 +19,15 @@ public class Road {
     }
 
     public void setGreenTrafficLight(TurnDirection direction) {
-        var firstRoadLine = getFirstRoadLineForDirection(direction);
+        var roadLines = getRoadLinesForDirection(direction);
 
-        firstRoadLine.ifPresent(roadLine -> roadLineLights.get(roadLine).setGreenLight());
+        roadLines.forEach(roadLine -> roadLineLights.get(roadLine).setGreenLight());
+    }
+
+    private Stream<RoadLine> getRoadLinesForDirection(TurnDirection direction) {
+        return roadLineLights.keySet()
+                .stream()
+                .filter(roadLine -> roadLine.getAllowedDirections().contains(direction));
     }
 
     public void setRedTrafficLightForAllRoadLines() {
@@ -28,9 +35,7 @@ public class Road {
     }
 
     private Optional<RoadLine> getFirstRoadLineForDirection(TurnDirection direction) {
-        return roadLineLights.keySet()
-                .stream()
-                .filter(roadLine -> roadLine.getAllowedDirections().contains(direction))
+        return getRoadLinesForDirection(direction)
                 .findFirst();
     }
 
@@ -41,9 +46,9 @@ public class Road {
     }
 
     public void removeVehicleFromRoadLine(TurnDirection direction) {
-        var firstRoadLine = getFirstRoadLineForDirection(direction);
+        var roadLines = getRoadLinesForDirection(direction);
 
-        firstRoadLine.ifPresent(RoadLine::removeFirstVehicle);
+        roadLines.forEach(RoadLine::removeFirstVehicle);
     }
 
     public void addVehicleToRoadLine(Vehicle vehicle) {
@@ -65,24 +70,22 @@ public class Road {
     }
 
     public void changeLightColor(TurnDirection direction) {
-        var trafficLights = getFirstRoadLineForDirection(direction)
-                .map(roadLineLights::get)
-                .orElseThrow();
+        var trafficLights = getRoadLinesForDirection(direction)
+                .map(roadLineLights::get);
 
+        trafficLights.forEach(Road::switchLightsForLights);
+    }
+
+    private static void switchLightsForLights(TrafficLights trafficLights) {
         switch(trafficLights.getCurrentLight()) {
-            case LightColor.RED:
-                trafficLights.setGreenLight();
-                break;
-            case LightColor.GREEN:
-                trafficLights.setRedLight();
-                break;
+            case LightColor.RED -> trafficLights.setGreenLight();
+            case LightColor.GREEN -> trafficLights.setRedLight();
         }
     }
 
-    public Vehicle peekFirstVehicle(TurnDirection direction) {
+    public Optional<Vehicle> peekFirstVehicle(TurnDirection direction) {
         return getFirstRoadLineForDirection(direction)
-                .map(RoadLine::peekFirstVehicle)
-                .orElseThrow();
+                .map(RoadLine::peekFirstVehicle);
     }
 
     public Map<RoadLine, TrafficLights> getRoadLineLights() {

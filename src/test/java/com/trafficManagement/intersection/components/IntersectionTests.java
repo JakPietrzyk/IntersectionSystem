@@ -1,10 +1,10 @@
 package com.trafficManagement.intersection.components;
 
+import com.trafficManagement.intersection.components.roadLines.LeftTurnRoadLine;
+import com.trafficManagement.intersection.components.roadLines.StraightOrRightRoadLine;
 import com.trafficManagement.intersection.constants.CompassDirection;
 import com.trafficManagement.intersection.constants.TurnDirection;
 import com.trafficManagement.intersection.models.Vehicle;
-import com.trafficManagement.intersection.components.roadLines.LeftTurnRoadLine;
-import com.trafficManagement.intersection.components.roadLines.StraightOrRightRoadLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,7 @@ import static com.trafficManagement.intersection.controllers.TrafficConfig.STEPS
 class IntersectionTests {
     Map<CompassDirection, Road> roads;
     Intersection intersection;
+
     @BeforeEach
     public void setUp() {
         this.roads = Map.of(
@@ -62,7 +63,7 @@ class IntersectionTests {
     }
 
     private void makeStepsToSwitchLights() {
-        for(int i = 0; i < STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
+        for (int i = 0; i < STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
             intersection.step();
         }
     }

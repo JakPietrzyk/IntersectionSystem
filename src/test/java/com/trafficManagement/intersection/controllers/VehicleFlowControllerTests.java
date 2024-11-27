@@ -1,12 +1,12 @@
 package com.trafficManagement.intersection.controllers;
 
-import com.trafficManagement.intersection.components.TrafficLights;
-import com.trafficManagement.intersection.constants.CompassDirection;
 import com.trafficManagement.intersection.components.Road;
-import com.trafficManagement.intersection.constants.TurnDirection;
-import com.trafficManagement.intersection.models.Vehicle;
+import com.trafficManagement.intersection.components.TrafficLights;
 import com.trafficManagement.intersection.components.roadLines.LeftTurnRoadLine;
 import com.trafficManagement.intersection.components.roadLines.StraightOrRightRoadLine;
+import com.trafficManagement.intersection.constants.CompassDirection;
+import com.trafficManagement.intersection.constants.TurnDirection;
+import com.trafficManagement.intersection.models.Vehicle;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

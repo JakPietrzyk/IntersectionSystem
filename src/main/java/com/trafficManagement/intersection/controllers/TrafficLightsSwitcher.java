@@ -1,8 +1,8 @@
 package com.trafficManagement.intersection.controllers;
 
+import com.trafficManagement.intersection.components.Road;
 import com.trafficManagement.intersection.constants.CompassDirection;
 import com.trafficManagement.intersection.constants.LightColor;
-import com.trafficManagement.intersection.components.Road;
 import com.trafficManagement.intersection.constants.TurnDirection;
 
 import java.util.EnumSet;
@@ -37,7 +37,7 @@ public class TrafficLightsSwitcher {
         roads.values().forEach(road -> road.changeLightColor(turnDirection));
     }
 
-    public void switchLightsOnCompassDirectionForTurnDirection(EnumSet<CompassDirection> compassDirections, EnumSet<TurnDirection> turnDirections) {
+    public void switchLightsForDirections(EnumSet<CompassDirection> compassDirections, EnumSet<TurnDirection> turnDirections) {
         compassDirections.forEach(direction ->
                 turnDirections.forEach(turn ->
                         roads.get(direction).changeLightColor(turn)

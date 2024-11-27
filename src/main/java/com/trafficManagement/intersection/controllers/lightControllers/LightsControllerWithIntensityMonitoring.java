@@ -1,10 +1,10 @@
 package com.trafficManagement.intersection.controllers.lightControllers;
 
 import com.trafficManagement.intersection.components.Road;
+import com.trafficManagement.intersection.components.roadLines.RoadLine;
 import com.trafficManagement.intersection.constants.CompassDirection;
 import com.trafficManagement.intersection.constants.TurnDirection;
 import com.trafficManagement.intersection.controllers.TrafficConfig;
-import com.trafficManagement.intersection.components.roadLines.RoadLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,7 +169,6 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         return result;
     }
 
-
     private List<Map.Entry<CompassDirection, TurnDirection>> getNonCollidingDirection(List<Map.Entry<Map.Entry<CompassDirection, TurnDirection>, Integer>> starvedDirections, List<Map.Entry<CompassDirection, TurnDirection>> result) {
         for (Map.Entry<Map.Entry<CompassDirection, TurnDirection>, Integer> candidate : starvedDirections.subList(1, starvedDirections.size())) {
             if (result.stream().noneMatch(existing -> doDirectionsCollide(existing, candidate.getKey()))) {
@@ -224,8 +223,7 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
             }
             if (turnA == TurnDirection.LEFT || turnB == TurnDirection.LEFT) {
                 return true;
-            }
-            else if (turnA == TurnDirection.STRAIGHT || turnB == TurnDirection.STRAIGHT) {
+            } else if (turnA == TurnDirection.STRAIGHT || turnB == TurnDirection.STRAIGHT) {
                 return false;
             }
             return false;

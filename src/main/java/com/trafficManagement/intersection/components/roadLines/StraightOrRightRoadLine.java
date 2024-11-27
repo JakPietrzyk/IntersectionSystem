@@ -4,8 +4,8 @@ import com.trafficManagement.intersection.constants.TurnDirection;
 
 import java.util.EnumSet;
 
-public class StraightOrRightRoadLine extends RoadLine {
+public final class StraightOrRightRoadLine extends RoadLine {
     public StraightOrRightRoadLine() {
-            super(EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT));
+        super(EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT));
     }
 }

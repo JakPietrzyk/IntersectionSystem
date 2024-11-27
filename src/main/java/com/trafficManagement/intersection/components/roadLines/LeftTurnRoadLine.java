@@ -4,7 +4,7 @@ import com.trafficManagement.intersection.constants.TurnDirection;
 
 import java.util.EnumSet;
 
-public class LeftTurnRoadLine extends RoadLine {
+public final class LeftTurnRoadLine extends RoadLine {
     public LeftTurnRoadLine() {
         super(EnumSet.of(TurnDirection.LEFT));
     }

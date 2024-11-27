@@ -10,10 +10,10 @@ import java.util.Map;
 
 public abstract class LightsController {
     protected final TrafficLightsSwitcher lightsSwitcher;
+    protected final Map<CompassDirection, Road> roads;
     protected EnumSet<TurnDirection> currentTurnDirection;
     protected EnumSet<CompassDirection> currentCompassDirections;
     protected int stepCounter = 0;
-    protected final Map<CompassDirection, Road> roads;
 
     protected LightsController(Map<CompassDirection, Road> roads) {
         this.roads = roads;

@@ -40,7 +40,7 @@ public abstract class RoadLine {
     }
 
     public final EnumSet<TurnDirection> getAllowedDirections() {
-        return allowedDirections;
+        return EnumSet.copyOf(allowedDirections);
     }
 
     public final boolean canVehicleProceed(TurnDirection direction) {

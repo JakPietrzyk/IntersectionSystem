@@ -20,10 +20,9 @@ public class TurnDirectionPicker {
         int difference = calculateDifference(endIndex, startIndex);
 
         return switch (difference) {
-            case 0, 2 -> TurnDirection.STRAIGHT;
             case 1 -> TurnDirection.LEFT;
             case 3 -> TurnDirection.RIGHT;
-            default -> throw new IllegalArgumentException("Invalid direction difference");
+            default -> TurnDirection.STRAIGHT;
         };
     }
 

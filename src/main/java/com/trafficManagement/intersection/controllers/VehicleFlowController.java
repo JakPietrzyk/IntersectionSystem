@@ -1,11 +1,8 @@
 package com.trafficManagement.intersection.controllers;
 
 import com.trafficManagement.intersection.components.Road;
-import com.trafficManagement.intersection.components.TrafficLights;
-import com.trafficManagement.intersection.components.roadLines.RoadLine;
 
 import java.util.Collection;
-import java.util.Map;
 
 public class VehicleFlowController {
     private final Collection<Road> roads;
@@ -15,18 +12,10 @@ public class VehicleFlowController {
     }
 
     public void makeStep() {
-        for (Road road : roads) {
-            Map<RoadLine, TrafficLights> roadLineLights = road.getRoadLineLights();
-
-            for (Map.Entry<RoadLine, TrafficLights> entry : roadLineLights.entrySet()) {
-                RoadLine roadLine = entry.getKey();
-                TrafficLights trafficLights = entry.getValue();
-
-                if (trafficLights.isGreenLight() && !roadLine.isEmpty()) {
-                    roadLine.removeFirstVehicle();
-                }
-            }
-        }
+        roads.stream()
+                .map(Road::getRoadLineLights)
+                .flatMap(roadLineWithLights -> roadLineWithLights.entrySet().stream())
+                .filter(entry -> !entry.getKey().isEmpty() && entry.getValue().isGreenLight())
+                .forEach(entry -> entry.getKey().removeFirstVehicle());
     }
-
 }
