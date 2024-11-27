@@ -93,6 +93,10 @@ public class Road {
     }
 
     public EnumSet<TurnDirection> getAllowedDirectionsForTurn(TurnDirection primaryTurn) {
-        return getFirstRoadLineForDirection(primaryTurn).get().getAllowedDirections();
+        Optional<RoadLine> roadLine = getFirstRoadLineForDirection(primaryTurn);
+
+        return roadLine.map(RoadLine::getAllowedDirections)
+                .orElse(EnumSet.noneOf(TurnDirection.class));
     }
+
 }

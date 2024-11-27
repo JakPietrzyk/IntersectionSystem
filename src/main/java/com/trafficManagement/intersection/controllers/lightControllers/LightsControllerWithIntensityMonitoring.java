@@ -12,6 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LightsControllerWithIntensityMonitoring extends LightsController {
+    private record DirectionTurnPair(CompassDirection compassDirection, TurnDirection turnDirection) {}
+
     private final Map<CompassDirection, Map<TurnDirection, Integer>> starvationCounters = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(LightsControllerWithIntensityMonitoring.class);
 
@@ -72,14 +74,14 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
     }
 
     private void changeLights() {
-        List<Map.Entry<CompassDirection, TurnDirection>> selectedDirections = getDirectionsToHandle();
+        List<DirectionTurnPair> selectedDirections = getDirectionsToHandle();
         switchLights(selectedDirections);
     }
 
-    private List<Map.Entry<CompassDirection, TurnDirection>> getDirectionsToHandle() {
+    private List<DirectionTurnPair> getDirectionsToHandle() {
         Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts = calculateVehiclesOnEachRoadLine();
-        List<Map.Entry<CompassDirection, TurnDirection>> mostNeeded = findMostNeededDirections(directionVehicleCounts);
-        List<Map.Entry<CompassDirection, TurnDirection>> starvedDirections = getStarvedDirectionsIfExists(directionVehicleCounts);
+        List<DirectionTurnPair> mostNeeded = findMostNeededDirections(directionVehicleCounts);
+        List<DirectionTurnPair> starvedDirections = getStarvedDirectionsIfExists(directionVehicleCounts);
 
         logger.info("Found directions: mostNeeded: {} , starvedDirections: {}", mostNeeded, starvedDirections);
 
@@ -116,14 +118,14 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         turnCounts.merge(direction, line.getVehicleCountForTurnDirection(direction), Integer::sum);
     }
 
-    private List<Map.Entry<CompassDirection, TurnDirection>> findMostNeededDirections(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
-        List<Map.Entry<CompassDirection, TurnDirection>> allDirections = getAllDirectionsListSortedByVehicleCount(directionVehicleCounts);
+    private List<DirectionTurnPair> findMostNeededDirections(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
+        List<DirectionTurnPair> allDirections = getAllDirectionsListSortedByVehicleCount(directionVehicleCounts);
 
         if (allDirections.isEmpty()) {
             return List.of();
         }
 
-        List<Map.Entry<CompassDirection, TurnDirection>> result = new ArrayList<>();
+        List<DirectionTurnPair> result = new ArrayList<>();
         result.add(allDirections.getFirst());
         addBestNonCollidingDirection(allDirections, result);
 
@@ -131,18 +133,18 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
     }
 
 
-    private static List<Map.Entry<CompassDirection, TurnDirection>> getAllDirectionsListSortedByVehicleCount(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
+    private static List<DirectionTurnPair> getAllDirectionsListSortedByVehicleCount(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
         return directionVehicleCounts.entrySet().stream()
                 .flatMap(entry -> entry.getValue().entrySet().stream()
-                        .map(turnEntry -> Map.entry(entry.getKey(), turnEntry.getKey())))
+                        .map(turnEntry -> new DirectionTurnPair(entry.getKey(), turnEntry.getKey())))
                 .sorted((entry1, entry2) -> Integer.compare(
-                        directionVehicleCounts.get(entry2.getKey()).get(entry2.getValue()),
-                        directionVehicleCounts.get(entry1.getKey()).get(entry1.getValue())))
+                        directionVehicleCounts.get(entry2.compassDirection).get(entry2.turnDirection),
+                        directionVehicleCounts.get(entry1.compassDirection).get(entry1.turnDirection)))
                 .toList();
     }
 
-    private void addBestNonCollidingDirection(List<Map.Entry<CompassDirection, TurnDirection>> allDirections, List<Map.Entry<CompassDirection, TurnDirection>> result) {
-        for (Map.Entry<CompassDirection, TurnDirection> candidate : allDirections.subList(1, allDirections.size())) {
+    private void addBestNonCollidingDirection(List<DirectionTurnPair> allDirections, List<DirectionTurnPair> result) {
+        for (DirectionTurnPair candidate : allDirections.subList(1, allDirections.size())) {
             if (result.stream().noneMatch(existing -> doDirectionsCollide(existing, candidate))) {
                 result.add(candidate);
                 break;
@@ -150,17 +152,17 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         }
     }
 
-    private List<Map.Entry<CompassDirection, TurnDirection>> getStarvedDirectionsIfExists(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
+    private List<DirectionTurnPair> getStarvedDirectionsIfExists(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
         var starvedDirections = getStarvedDirectionsListWithStarvationCount(directionVehicleCounts);
 
         if (starvedDirections.isEmpty()) {
             return List.of();
         }
 
-        List<Map.Entry<CompassDirection, TurnDirection>> result = new ArrayList<>();
+        List<DirectionTurnPair> result = new ArrayList<>();
         result.add(starvedDirections.getFirst().getKey());
 
-        List<Map.Entry<CompassDirection, TurnDirection>> otherStarvedDirection = getNonCollidingDirection(starvedDirections, result);
+        List<DirectionTurnPair> otherStarvedDirection = getNonCollidingDirection(starvedDirections, result);
         if (!otherStarvedDirection.isEmpty()) {
             return result;
         }
@@ -169,8 +171,8 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         return result;
     }
 
-    private List<Map.Entry<CompassDirection, TurnDirection>> getNonCollidingDirection(List<Map.Entry<Map.Entry<CompassDirection, TurnDirection>, Integer>> starvedDirections, List<Map.Entry<CompassDirection, TurnDirection>> result) {
-        for (Map.Entry<Map.Entry<CompassDirection, TurnDirection>, Integer> candidate : starvedDirections.subList(1, starvedDirections.size())) {
+    private List<DirectionTurnPair> getNonCollidingDirection(List<Map.Entry<DirectionTurnPair, Integer>> starvedDirections, List<DirectionTurnPair> result) {
+        for (Map.Entry<DirectionTurnPair, Integer> candidate : starvedDirections.subList(1, starvedDirections.size())) {
             if (result.stream().noneMatch(existing -> doDirectionsCollide(existing, candidate.getKey()))) {
                 result.add(candidate.getKey());
                 return result;
@@ -179,12 +181,12 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         return Collections.emptyList();
     }
 
-    private void addBestNonCollidingDirection(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts, List<Map.Entry<CompassDirection, TurnDirection>> result) {
+    private void addBestNonCollidingDirection(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts, List<DirectionTurnPair> result) {
         for (var entry : directionVehicleCounts.entrySet()) {
             for (var turnEntry : entry.getValue().entrySet()) {
-                Map.Entry<CompassDirection, TurnDirection> candidate = Map.entry(entry.getKey(), turnEntry.getKey());
+                DirectionTurnPair candidate = new DirectionTurnPair(entry.getKey(), turnEntry.getKey());
                 if (directionVehicleCounts.get(entry.getKey()).getOrDefault(turnEntry.getKey(), 0) > 0 &&
-                        result.stream().noneMatch(existing -> doDirectionsCollide(existing, candidate) || existing.equals(candidate))) {
+                        result.stream().noneMatch(existing -> existing.equals(candidate) || doDirectionsCollide(existing, candidate))) {
                     result.add(candidate);
                     return;
                 }
@@ -192,26 +194,26 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         }
     }
 
-    private List<Map.Entry<Map.Entry<CompassDirection, TurnDirection>, Integer>> getStarvedDirectionsListWithStarvationCount(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
+    private List<Map.Entry<DirectionTurnPair, Integer>> getStarvedDirectionsListWithStarvationCount(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
         return starvationCounters.entrySet().stream()
                 .flatMap(directionEntry -> directionEntry.getValue().entrySet().stream()
                         .filter(turnEntry -> turnEntry.getValue() >= TrafficConfig.STARVATION_THRESHOLD)
-                        .map(turnEntry -> Map.entry(Map.entry(directionEntry.getKey(), turnEntry.getKey()), turnEntry.getValue())))
+                        .map(turnEntry -> Map.entry(new DirectionTurnPair(directionEntry.getKey(), turnEntry.getKey()), turnEntry.getValue())))
                 .filter(entry -> isAnyVehicleWaiting(directionVehicleCounts, entry))
                 .sorted((entry1, entry2) -> Integer.compare(entry2.getValue(), entry1.getValue()))
                 .toList();
     }
 
-    private static boolean isAnyVehicleWaiting(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts, Map.Entry<Map.Entry<CompassDirection, TurnDirection>, Integer> entry) {
-        return directionVehicleCounts.get(entry.getKey().getKey()).getOrDefault(entry.getKey().getValue(), 0) > 0;
+    private static boolean isAnyVehicleWaiting(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts, Map.Entry<DirectionTurnPair, Integer> entry) {
+        return directionVehicleCounts.get(entry.getKey().compassDirection).getOrDefault(entry.getKey().turnDirection, 0) > 0;
     }
 
-    private boolean doDirectionsCollide(Map.Entry<CompassDirection, TurnDirection> a,
-                                        Map.Entry<CompassDirection, TurnDirection> b) {
-        CompassDirection directionA = a.getKey();
-        CompassDirection directionB = b.getKey();
-        TurnDirection turnA = a.getValue();
-        TurnDirection turnB = b.getValue();
+    private boolean doDirectionsCollide(DirectionTurnPair a,
+                                        DirectionTurnPair b) {
+        CompassDirection directionA = a.compassDirection;
+        CompassDirection directionB = b.compassDirection;
+        TurnDirection turnA = a.turnDirection;
+        TurnDirection turnB = b.turnDirection;
 
         if (directionA == directionB) {
             return false;
@@ -233,33 +235,33 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
     }
 
 
-    private void switchLights(List<Map.Entry<CompassDirection, TurnDirection>> newDirections) {
+    private void switchLights(List<DirectionTurnPair> newDirections) {
         lightsSwitcher.switchLightsToRedForCompassDirections(currentCompassDirections);
         updateCurrentDirections(newDirections);
 
-        for (var entry : newDirections) {
-            clearStarvationForDirection(entry);
-            lightsSwitcher.switchLightsToGreenForDirections(entry.getKey(), entry.getValue());
+        for (var directionTurnPair : newDirections) {
+            clearStarvationForDirection(directionTurnPair);
+            lightsSwitcher.switchLightsToGreenForDirections(directionTurnPair.compassDirection, directionTurnPair.turnDirection);
         }
 
         logger.info("CurrentCompassDirections: {}, CurrentTurnDirections: {}", currentCompassDirections, currentTurnDirection);
     }
 
-    private void updateCurrentDirections(List<Map.Entry<CompassDirection, TurnDirection>> newDirections) {
+    private void updateCurrentDirections(List<DirectionTurnPair> newDirections) {
         currentCompassDirections = newDirections.stream()
-                .map(Map.Entry::getKey)
+                .map(DirectionTurnPair::compassDirection)
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(CompassDirection.class)));
         currentTurnDirection = newDirections.stream()
-                .map(Map.Entry::getValue)
+                .map(DirectionTurnPair::turnDirection)
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(TurnDirection.class)));
 
         addDirectionsIfRoadLineAllowsMore(newDirections);
     }
 
-    private void addDirectionsIfRoadLineAllowsMore(List<Map.Entry<CompassDirection, TurnDirection>> newDirections) {
+    private void addDirectionsIfRoadLineAllowsMore(List<DirectionTurnPair> newDirections) {
         for (var entry : newDirections) {
-            CompassDirection direction = entry.getKey();
-            TurnDirection primaryTurn = entry.getValue();
+            CompassDirection direction = entry.compassDirection;
+            TurnDirection primaryTurn = entry.turnDirection;
 
             EnumSet<TurnDirection> possibleTurns = roads.get(direction)
                     .getAllowedDirectionsForTurn(primaryTurn);
@@ -268,8 +270,8 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         }
     }
 
-    private void clearStarvationForDirection(Map.Entry<CompassDirection, TurnDirection> entry) {
-        starvationCounters.get(entry.getKey()).put(entry.getValue(), 0);
+    private void clearStarvationForDirection(DirectionTurnPair directionTurnPair) {
+        starvationCounters.get(directionTurnPair.compassDirection).put(directionTurnPair.turnDirection, 0);
     }
 }
 
