@@ -1,0 +1,22 @@
+<div class="road-line-data">
+  <ng-container *ngIf="turnDirection === 'LEFT'">
+    <input type="number" class="input" placeholder="Left" [(ngModel)]="vehicleCount" />
+    <button (click)="addVehicles()">Add vehicles</button>
+    <img src="/leftArrow.png" alt="Left Arrow" class="arrow" />
+  </ng-container>
+  <ng-container *ngIf="turnDirection === 'RIGHT' || turnDirection === 'STRAIGHT'">
+    <input type="number" class="input" [placeholder]="turnDirection" [(ngModel)]="vehicleCount" />
+    <button (click)="addVehicles()">Add vehicles</button>
+    <img src="/straightRightArrow.png" alt="Arrow" class="arrow" />
+  </ng-container>
+
+  <div class="counter">
+    Vehicles: <span>{{ getLaneVehicleCount(compassDirection, turnDirection) }}</span>
+  </div>
+
+  <img
+    [src]="getLaneLightCount(compassDirection, turnDirection) === 'GREEN' ? '/greenLight.png' : '/redLight.png'"
+    [alt]="getLaneLightCount(compassDirection, turnDirection)"
+    [class]="getLaneLightCount(compassDirection, turnDirection) === 'GREEN' ? 'greenLight' : 'redLight'"
+  />
+</div>
