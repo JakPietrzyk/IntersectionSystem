@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build: ./Frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - intersection-system-network
+  backend-java:
+    build: ./Backend
+    ports:
+      - "8080:8080"
+    networks:
+      - intersection-system-network
+
+networks:
+  intersection-system-network:
