@@ -1,4 +1,4 @@
-package com.trafficmanagement.intersection.models;
+package com.trafficmanagement.intersection.models.statuses;
 
 import com.trafficmanagement.intersection.components.Road;
 import com.trafficmanagement.intersection.constants.CompassDirection;

@@ -3,15 +3,14 @@ package com.trafficmanagement.intersection.components;
 import com.trafficmanagement.intersection.components.roadlines.RoadLine;
 import com.trafficmanagement.intersection.constants.LightColor;
 import com.trafficmanagement.intersection.constants.TurnDirection;
-import com.trafficmanagement.intersection.models.RoadLineStatus;
 import com.trafficmanagement.intersection.models.Vehicle;
+import com.trafficmanagement.intersection.models.statuses.RoadLineStatus;
 
 import java.util.*;
 import java.util.stream.Stream;
 
 public class Road {
     private final Map<RoadLine, TrafficLights> roadLineLights;
-
 
     public Road(Map<RoadLine, TrafficLights> roadLineLights) {
         this.roadLineLights = roadLineLights;
@@ -112,5 +111,4 @@ public class Road {
                 .flatMap(roadLine -> roadLine.getAllowedDirections().stream())
                 .toList();
     }
-
 }

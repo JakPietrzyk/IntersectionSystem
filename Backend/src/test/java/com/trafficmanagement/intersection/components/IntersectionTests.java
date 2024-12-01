@@ -1,5 +1,7 @@
 package com.trafficmanagement.intersection.components;
 
+import com.trafficmanagement.intersection.components.intersections.IntensityHandlingIntersection;
+import com.trafficmanagement.intersection.components.intersections.Intersection;
 import com.trafficmanagement.intersection.components.roadlines.LeftTurnRoadLine;
 import com.trafficmanagement.intersection.components.roadlines.StraightOrRightRoadLine;
 import com.trafficmanagement.intersection.constants.CompassDirection;
@@ -37,7 +39,7 @@ class IntersectionTests {
                         new StraightOrRightRoadLine(), new TrafficLights()
                 ))
         );
-        this.intersection = new Intersection(roads);
+        this.intersection = new IntensityHandlingIntersection(roads);
     }
 
     @Test

@@ -69,3 +69,4 @@ Frontend/node_modules/
 Frontend/bower_components/
 Frontend/.angular
 /Backend/logs/application.log
+/Backend/simulationFiles/output.json

@@ -20,8 +20,8 @@ public abstract class RoadLine {
         waitingVehicles.add(vehicle);
     }
 
-    public final void removeFirstVehicle() {
-        waitingVehicles.poll();
+    public final String removeFirstVehicle() {
+        return waitingVehicles.poll().id();
     }
 
     public final int getVehicleCount() {

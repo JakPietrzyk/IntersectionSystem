@@ -1,4 +1,4 @@
-package com.trafficmanagement.intersection.models;
+package com.trafficmanagement.intersection.models.statuses;
 
 import com.trafficmanagement.intersection.constants.LightColor;
 import com.trafficmanagement.intersection.constants.TurnDirection;
