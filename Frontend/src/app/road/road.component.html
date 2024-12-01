@@ -1,24 +1,24 @@
 <div class="road" [ngClass]="compassDirection">
-  <mat-grid-list cols="2" rowHeight="100%">
-    <mat-grid-tile *ngIf="hasLeftLane" class="left-side">
-      <app-lane
-        [compassDirection]="compassDirection"
-        turnDirection="LEFT"
-        [getLaneVehicleCount]="getLaneVehicleCount"
-        [getLaneLight]="getLaneLight"
-        [fetchCurrentState]="fetchCurrentState"
-      >
-      </app-lane>
-    </mat-grid-tile>
-    <mat-grid-tile *ngIf="hasStraightOrRightLane" class="right-side">
-      <app-lane
-        [compassDirection]="compassDirection"
-        turnDirection="STRAIGHT"
-        [getLaneVehicleCount]="getLaneVehicleCount"
-        [getLaneLight]="getLaneLight"
-        [fetchCurrentState]="fetchCurrentState"
-      >
-      </app-lane>
-    </mat-grid-tile>
-  </mat-grid-list>
+    <mat-grid-list cols="2" rowHeight="100%">
+        <mat-grid-tile *ngIf="hasLeftLane" class="left-side">
+            <app-lane
+                    [compassDirection]="compassDirection"
+                    turnDirection="LEFT"
+                    [getLaneVehicleCount]="getLaneVehicleCount"
+                    [getLaneLight]="getLaneLight"
+                    [fetchCurrentState]="fetchCurrentState"
+            >
+            </app-lane>
+        </mat-grid-tile>
+        <mat-grid-tile *ngIf="hasStraightOrRightLane" class="right-side">
+            <app-lane
+                    [compassDirection]="compassDirection"
+                    turnDirection="STRAIGHT"
+                    [getLaneVehicleCount]="getLaneVehicleCount"
+                    [getLaneLight]="getLaneLight"
+                    [fetchCurrentState]="fetchCurrentState"
+            >
+            </app-lane>
+        </mat-grid-tile>
+    </mat-grid-list>
 </div>

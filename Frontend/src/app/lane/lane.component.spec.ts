@@ -1,23 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LaneComponent } from './lane.component';
+import {LaneComponent} from './lane.component';
 
 describe('LaneComponentComponent', () => {
-  let component: LaneComponent;
-  let fixture: ComponentFixture<LaneComponent>;
+    let component: LaneComponent;
+    let fixture: ComponentFixture<LaneComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LaneComponent]
-    })
-    .compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [LaneComponent]
+        })
+            .compileComponents();
 
-    fixture = TestBed.createComponent(LaneComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(LaneComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

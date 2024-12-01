@@ -1,63 +1,63 @@
 <div class="wrapper">
-  <mat-grid-list cols="3" rowHeight="300px" class="intersection">
-    <!-- North road -->
-    <mat-grid-tile></mat-grid-tile>
-    <mat-grid-tile >
-      <app-road
-        class="road"
-        compassDirection="NORTH"
-        [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLight]="getLaneLight.bind(this)"
-        [fetchCurrentState]="fetchCurrentState.bind(this)"
-      >
-      </app-road>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <button (click)="stepSimulation()">Make step</button>
-      <button (click)="restartIntersection()">Restart Intersection</button>
-    </mat-grid-tile>
+    <mat-grid-list cols="3" rowHeight="300px" class="intersection">
+        <!-- North road -->
+        <mat-grid-tile></mat-grid-tile>
+        <mat-grid-tile>
+            <app-road
+                    class="road"
+                    compassDirection="NORTH"
+                    [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
+                    [getLaneLight]="getLaneLight.bind(this)"
+                    [fetchCurrentState]="fetchCurrentState.bind(this)"
+            >
+            </app-road>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <button (click)="stepSimulation()">Make step</button>
+            <button (click)="restartIntersection()">Restart Intersection</button>
+        </mat-grid-tile>
 
-    <!-- West road -->
-    <mat-grid-tile>
-      <app-road
-        class="road"
-        compassDirection="WEST"
-        [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLight]="getLaneLight.bind(this)"
-        [fetchCurrentState]="fetchCurrentState.bind(this)"
-      >
-      </app-road>
-    </mat-grid-tile>
+        <!-- West road -->
+        <mat-grid-tile>
+            <app-road
+                    class="road"
+                    compassDirection="WEST"
+                    [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
+                    [getLaneLight]="getLaneLight.bind(this)"
+                    [fetchCurrentState]="fetchCurrentState.bind(this)"
+            >
+            </app-road>
+        </mat-grid-tile>
 
-    <!-- Center -->
-    <mat-grid-tile class="center">
-      <img src="/newsDirections.svg" alt="" class="news" />
-    </mat-grid-tile>
+        <!-- Center -->
+        <mat-grid-tile class="center">
+            <img src="/newsDirections.svg" alt="" class="news"/>
+        </mat-grid-tile>
 
-    <!-- East road -->
-    <mat-grid-tile>
-      <app-road
-        class="road"
-        compassDirection="EAST"
-        [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLight]="getLaneLight.bind(this)"
-        [fetchCurrentState]="fetchCurrentState.bind(this)"
-      >
-      </app-road>
-    </mat-grid-tile>
+        <!-- East road -->
+        <mat-grid-tile>
+            <app-road
+                    class="road"
+                    compassDirection="EAST"
+                    [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
+                    [getLaneLight]="getLaneLight.bind(this)"
+                    [fetchCurrentState]="fetchCurrentState.bind(this)"
+            >
+            </app-road>
+        </mat-grid-tile>
 
-    <!-- South road -->
-    <mat-grid-tile></mat-grid-tile>
-    <mat-grid-tile>
-      <app-road
-        class="road"
-        compassDirection="SOUTH"
-        [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLight]="getLaneLight.bind(this)"
-        [fetchCurrentState]="fetchCurrentState.bind(this)"
-      >
-      </app-road>
-    </mat-grid-tile>
-    <mat-grid-tile></mat-grid-tile>
-  </mat-grid-list>
+        <!-- South road -->
+        <mat-grid-tile></mat-grid-tile>
+        <mat-grid-tile>
+            <app-road
+                    class="road"
+                    compassDirection="SOUTH"
+                    [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
+                    [getLaneLight]="getLaneLight.bind(this)"
+                    [fetchCurrentState]="fetchCurrentState.bind(this)"
+            >
+            </app-road>
+        </mat-grid-tile>
+        <mat-grid-tile></mat-grid-tile>
+    </mat-grid-list>
 </div>
