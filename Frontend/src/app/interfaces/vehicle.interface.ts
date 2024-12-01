@@ -1,6 +1,8 @@
-export interface Vehicle {
-  id: string;
-  startRoad: string;
-  endRoad?: string;
-  turnDirection: string;
+import {CompassDirection} from "../types/compassDirection.type";
+import {TurnDirection} from "../types/turnDirection.type";
+
+export interface CreateVehicles {
+  numberOfVehicles: number;
+  startRoad: CompassDirection;
+  turnDirection: TurnDirection;
 }

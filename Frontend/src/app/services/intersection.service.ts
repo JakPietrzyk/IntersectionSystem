@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IntersectionStateInterface } from '../interfaces/intersection.state.interface';
-import {Vehicle} from '../interfaces/vehicle.interface';
+import {CreateVehicles} from '../interfaces/vehicle.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,7 @@ export class IntersectionService {
     return this.http.get<void>(`${this.apiUrl}/restart`);
   }
 
-  addVehicles(vehiclesData: Vehicle[]): Observable<void> {
+  addVehicles(vehiclesData: CreateVehicles): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/addVehicle`, vehiclesData)
   }
 }

@@ -1,6 +1,7 @@
 package com.trafficmanagement.intersection.controllers.restapi;
 
 import com.trafficmanagement.intersection.components.intersections.Intersection;
+import com.trafficmanagement.intersection.models.CreateVehicles;
 import com.trafficmanagement.intersection.models.Vehicle;
 import com.trafficmanagement.intersection.models.statuses.IntersectionState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
-
+import java.util.UUID;
 
 
 @RestController
@@ -46,10 +47,11 @@ public class TrafficController {
     }
 
     @PostMapping("/addVehicle")
-    public void addVehicle(@RequestBody List<Vehicle> vehicles) {
-        vehicles.stream()
-                .map(vehicle -> new Vehicle(vehicle.id(), vehicle.startRoad(), vehicle.turnDirection()))
-                .forEach(intersection::addVehicle);
+    public void addVehicle(@RequestBody CreateVehicles vehicles) {
+        for(int i = 0; i < vehicles.numberOfVehicles(); i++) {
+            var vehicleToAdd = new Vehicle(UUID.randomUUID().toString(), vehicles.startRoad(), vehicles.turnDirection());
+            intersection.addVehicle(vehicleToAdd);
+        }
     }
 
     @Bean

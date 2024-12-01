@@ -2,8 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {IntersectionService} from '../services/intersection.service';
-import {Vehicle} from '../interfaces/vehicle.interface';
-import { v4 as uuidv4 } from 'uuid';
+import {CreateVehicles} from '../interfaces/vehicle.interface';
 import {CompassDirection} from "../types/compassDirection.type";
 import {TurnDirection} from "../types/turnDirection.type";
 import {LightColor} from "../types/lightColor.type";
@@ -35,18 +34,13 @@ export class LaneComponent {
       alert("Wrong vehicles number")
       return;
     }
-
-    const vehicles: Vehicle[] = [];
-    for (let i = 0; i < this.vehicleToAddCount; i++) {
-      const vehicle: Vehicle = {
-        id: uuidv4().toString(),
-        startRoad: this.compassDirection,
-        turnDirection: this.turnDirection
-      };
-      vehicles.push(vehicle);
+    const createVehicles : CreateVehicles = {
+      numberOfVehicles: this.vehicleToAddCount,
+      startRoad: this.compassDirection,
+      turnDirection: this.turnDirection
     }
 
-    this.intersectionService.addVehicles(vehicles).subscribe(() => {
+    this.intersectionService.addVehicles(createVehicles).subscribe(() => {
       this.vehicleToAddCount = 0;
       this.fetchCurrentState();
     });
