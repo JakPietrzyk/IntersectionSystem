@@ -1,0 +1,1 @@
+export type LightColor = 'GREEN' | 'RED';

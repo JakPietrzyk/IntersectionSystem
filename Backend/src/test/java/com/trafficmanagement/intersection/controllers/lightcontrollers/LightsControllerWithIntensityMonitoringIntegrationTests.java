@@ -58,8 +58,10 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
 
         while (numberOfVehicles > 0) {
             makeStepsToSwitchLights();
-            assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(TurnDirection.STRAIGHT));
-            assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(TurnDirection.STRAIGHT));
+            assertEquals(LightColor.GREEN,
+                    roads.get(CompassDirection.NORTH).getCurrentLightColor(TurnDirection.STRAIGHT));
+            assertEquals(LightColor.GREEN,
+                    roads.get(CompassDirection.SOUTH).getCurrentLightColor(TurnDirection.STRAIGHT));
             numberOfVehicles -= 5;
         }
     }
@@ -89,9 +91,11 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
 
         for (int i = 0; i < STARVATION_THRESHOLD; i += 5) {
             makeStepsToSwitchLights();
-            assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(TurnDirection.STRAIGHT));
+            assertEquals(LightColor.GREEN,
+                    roads.get(CompassDirection.NORTH).getCurrentLightColor(TurnDirection.STRAIGHT));
             assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(TurnDirection.LEFT));
-            assertEquals(LightColor.RED, roads.get(CompassDirection.SOUTH).getCurrentLightColor(TurnDirection.STRAIGHT));
+            assertEquals(LightColor.RED,
+                    roads.get(CompassDirection.SOUTH).getCurrentLightColor(TurnDirection.STRAIGHT));
         }
         makeStepsToSwitchLights();
 

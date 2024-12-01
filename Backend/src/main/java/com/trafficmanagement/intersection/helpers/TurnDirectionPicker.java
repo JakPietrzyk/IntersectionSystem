@@ -55,5 +55,6 @@ public class TurnDirectionPicker {
         };
     }
 
-    private TurnDirectionPicker() {}
+    private TurnDirectionPicker() {
+    }
 }

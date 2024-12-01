@@ -1,5 +1,8 @@
+import {TurnDirection} from "../types/turnDirection.type";
+import {LightColor} from "../types/lightColor.type";
+
 export interface RoadLineStatus {
-  turnDirection: string[];
-  lightColor: string;
+  turnDirections: TurnDirection[];
+  lightColor: LightColor;
   vehicleCount: number;
 }

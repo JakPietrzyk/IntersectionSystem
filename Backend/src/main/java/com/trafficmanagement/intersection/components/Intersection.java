@@ -4,7 +4,7 @@ import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.TurnDirection;
 import com.trafficmanagement.intersection.controllers.VehicleFlowController;
 import com.trafficmanagement.intersection.controllers.lightcontrollers.LightsController;
-import com.trafficmanagement.intersection.controllers.lightcontrollers.SimpleLightsFlowController;
+import com.trafficmanagement.intersection.controllers.lightcontrollers.LightsControllerWithIntensityMonitoring;
 import com.trafficmanagement.intersection.models.IntersectionState;
 import com.trafficmanagement.intersection.models.Vehicle;
 
@@ -17,7 +17,7 @@ public class Intersection {
 
     public Intersection(Map<CompassDirection, Road> roads) {
         this.vehicleFlowController = new VehicleFlowController(roads.values());
-        this.simpleLightsFlowController = new SimpleLightsFlowController(roads);
+        this.simpleLightsFlowController = new LightsControllerWithIntensityMonitoring(roads);
         this.roads = roads;
     }
 

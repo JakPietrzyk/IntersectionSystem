@@ -4,14 +4,17 @@ import com.trafficmanagement.intersection.components.Road;
 import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.TrafficConfig;
 import com.trafficmanagement.intersection.constants.TurnDirection;
-import com.trafficmanagement.intersection.controllers.*;
+import com.trafficmanagement.intersection.controllers.StarvationCounterManager;
 import com.trafficmanagement.intersection.models.DirectionTurnPair;
-import com.trafficmanagement.intersection.services.directionsselectors.DirectionSelector;
 import com.trafficmanagement.intersection.services.VehicleCounter;
+import com.trafficmanagement.intersection.services.directionsselectors.DirectionSelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LightsControllerWithIntensityMonitoring extends LightsController {
@@ -20,7 +23,7 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
     private final StarvationCounterManager starvationCounterManager;
     private final DirectionSelector directionSelector;
 
-    protected LightsControllerWithIntensityMonitoring(Map<CompassDirection, Road> roads) {
+    public LightsControllerWithIntensityMonitoring(Map<CompassDirection, Road> roads) {
         super(roads);
         logger.info("Initializing Starvation Counters");
         VehicleCounter vehicleCounter = new VehicleCounter(roads);
@@ -53,10 +56,12 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
 
         for (var directionTurnPair : newDirections) {
             starvationCounterManager.clearStarvationForDirection(directionTurnPair);
-            lightsSwitcher.switchLightsToGreenForDirections(directionTurnPair.compassDirection(), directionTurnPair.turnDirection());
+            lightsSwitcher.switchLightsToGreenForDirections(directionTurnPair.compassDirection(),
+                    directionTurnPair.turnDirection());
         }
 
-        logger.info("CurrentCompassDirections: {}, CurrentTurnDirections: {}", currentCompassDirections, currentTurnDirection);
+        logger.info("CurrentCompassDirections: {}, CurrentTurnDirections: {}", currentCompassDirections,
+                currentTurnDirection);
     }
 
     private void updateCurrentDirections(List<DirectionTurnPair> newDirections) {

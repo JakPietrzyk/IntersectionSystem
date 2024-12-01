@@ -16,8 +16,8 @@ import java.util.Map;
 import static com.trafficmanagement.intersection.constants.TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH;
 import static org.junit.jupiter.api.Assertions.*;
 
-class SimpleLightsFlowControllerTests {
-    private SimpleLightsFlowController simpleLightsFlowController;
+class SequentialLightsFlowControllerTests {
+    private SequentialLightsFlowController sequentialLightsFlowController;
 
     @BeforeEach
     public void setUp() {
@@ -39,18 +39,20 @@ class SimpleLightsFlowControllerTests {
                         new StraightOrRightRoadLine(), new TrafficLights()
                 ))
         );
-        this.simpleLightsFlowController = new SimpleLightsFlowController(roads);
+        this.sequentialLightsFlowController = new SequentialLightsFlowController(roads);
     }
 
     @Test
     void shouldSwitchLightsAfterDefinedSteps() {
-        assertEquals(LightColor.GREEN, this.simpleLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
+        assertEquals(LightColor.GREEN, this.sequentialLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH,
+                TurnDirection.STRAIGHT));
 
         for (int i = 0; i < STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
-            simpleLightsFlowController.makeStep();
+            sequentialLightsFlowController.makeStep();
         }
 
-        assertEquals(LightColor.RED, this.simpleLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
+        assertEquals(LightColor.RED, this.sequentialLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH,
+                TurnDirection.STRAIGHT));
     }
 
     @Test
@@ -68,7 +70,7 @@ class SimpleLightsFlowControllerTests {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new SimpleLightsFlowController(incompleteRoads)
+                () -> new SequentialLightsFlowController(incompleteRoads)
         );
     }
 
@@ -82,6 +84,6 @@ class SimpleLightsFlowControllerTests {
             )));
         }
 
-        assertDoesNotThrow(() -> new SimpleLightsFlowController(completeRoads));
+        assertDoesNotThrow(() -> new SequentialLightsFlowController(completeRoads));
     }
 }

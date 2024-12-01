@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {MatGridList, MatGridTile} from '@angular/material/grid-list';
-import {RoadComponent} from '../road.component/road.component';
+import {RoadComponent} from '../road/road.component';
 import {IntersectionStateInterface} from '../interfaces/intersection.state.interface'
 import {IntersectionService} from '../services/intersection.service';
+import {TurnDirection} from "../types/turnDirection.type";
+import {CompassDirection} from "../types/compassDirection.type";
+import {LightColor} from "../types/lightColor.type";
 
 @Component({
   selector: 'app-intersection',
@@ -30,35 +33,31 @@ export class IntersectionComponent implements OnInit {
     });
   }
 
-  getLaneVehicleCount(compassDirection: string, turnDirection: string): number {
+  getLaneVehicleCount(compassDirection: CompassDirection, turnDirection: TurnDirection): number {
     const road = this.intersectionState.roadStatuses.find(
-      (road: any) => road.compassDirection === compassDirection
+      (road) => road.compassDirection === compassDirection
     );
-    const lane = road?.roadLineStatus.find((lane: any) =>
-      lane.turnDirection.includes(turnDirection)
+    const lane = road?.roadLineStatus.find((lane) =>
+      lane.turnDirections.includes(turnDirection)
     );
     return lane?.vehicleCount ?? 0;
   }
 
-  getLaneLightCount(compassDirection: string, turnDirection: string): string {
+  getLaneLight(compassDirection: CompassDirection, turnDirection: TurnDirection): LightColor {
     const road = this.intersectionState.roadStatuses.find(
-      (road: any) => road.compassDirection === compassDirection
+      (road) => road.compassDirection === compassDirection
     );
-    const lane = road?.roadLineStatus.find((lane: any) =>
-      lane.turnDirection.includes(turnDirection)
+    const lane = road?.roadLineStatus.find((lane) =>
+      lane.turnDirections.includes(turnDirection)
     );
-    return lane?.lightColor ?? '';
+    return lane?.lightColor ?? "RED";
   }
 
   stepSimulation() {
-    this.intersectionService.stepSimulation().subscribe(() => {
-      this.fetchCurrentState();
-    });
+    this.intersectionService.stepSimulation().subscribe(() => this.fetchCurrentState());
   }
 
   restartIntersection() {
-    this.intersectionService.restartIntersection().subscribe(() => {
-      this.fetchCurrentState();
-    });
+    this.intersectionService.restartIntersection().subscribe(() => this.fetchCurrentState());
   }
 }

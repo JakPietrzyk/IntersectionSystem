@@ -29,7 +29,8 @@ public class VehicleCounter {
                 ));
     }
 
-    private static void addAllVehiclesOnEachRoadLineForRoad(Map.Entry<CompassDirection, Road> entry, Map<TurnDirection, Integer> turnCounts) {
+    private static void addAllVehiclesOnEachRoadLineForRoad(Map.Entry<CompassDirection, Road> entry,
+                                                            Map<TurnDirection, Integer> turnCounts) {
         for (RoadLine line : getRoadLines(entry)) {
             for (TurnDirection direction : line.getAllowedDirections()) {
                 addCountedVehicles(line, direction, turnCounts);
@@ -41,7 +42,8 @@ public class VehicleCounter {
         return entry.getValue().getRoadLineLights().keySet();
     }
 
-    private static void addCountedVehicles(RoadLine line, TurnDirection direction, Map<TurnDirection, Integer> turnCounts) {
+    private static void addCountedVehicles(RoadLine line, TurnDirection direction,
+                                           Map<TurnDirection, Integer> turnCounts) {
         turnCounts.merge(direction, line.getVehicleCountForTurnDirection(direction), Integer::sum);
     }
 }

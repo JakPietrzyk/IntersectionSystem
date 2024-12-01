@@ -54,7 +54,7 @@ public class TrafficController {
         intersection.step();
     }
 
-    @GetMapping( "/state")
+    @GetMapping("/state")
     public IntersectionState getIntersectionState() {
         return intersection.getIntersectionStatus();
     }

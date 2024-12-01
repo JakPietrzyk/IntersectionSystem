@@ -1,13 +1,13 @@
 <div class="wrapper">
-  <mat-grid-list cols="3" rowHeight="1:1" class="intersection">
+  <mat-grid-list cols="3" rowHeight="300px" class="intersection">
     <!-- North road -->
     <mat-grid-tile></mat-grid-tile>
     <mat-grid-tile >
       <app-road
-        class="road north"
+        class="road"
         compassDirection="NORTH"
         [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLightCount]="getLaneLightCount.bind(this)"
+        [getLaneLight]="getLaneLight.bind(this)"
         [fetchCurrentState]="fetchCurrentState.bind(this)"
       >
       </app-road>
@@ -20,10 +20,10 @@
     <!-- West road -->
     <mat-grid-tile>
       <app-road
-        class="road west"
+        class="road"
         compassDirection="WEST"
         [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLightCount]="getLaneLightCount.bind(this)"
+        [getLaneLight]="getLaneLight.bind(this)"
         [fetchCurrentState]="fetchCurrentState.bind(this)"
       >
       </app-road>
@@ -31,16 +31,16 @@
 
     <!-- Center -->
     <mat-grid-tile class="center">
-      <img src="/newsDirections.png" alt="" class="news" />
+      <img src="/newsDirections.svg" alt="" class="news" />
     </mat-grid-tile>
 
     <!-- East road -->
     <mat-grid-tile>
       <app-road
-        class="road east"
+        class="road"
         compassDirection="EAST"
         [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLightCount]="getLaneLightCount.bind(this)"
+        [getLaneLight]="getLaneLight.bind(this)"
         [fetchCurrentState]="fetchCurrentState.bind(this)"
       >
       </app-road>
@@ -50,10 +50,10 @@
     <mat-grid-tile></mat-grid-tile>
     <mat-grid-tile>
       <app-road
-        class="road south"
+        class="road"
         compassDirection="SOUTH"
         [getLaneVehicleCount]="getLaneVehicleCount.bind(this)"
-        [getLaneLightCount]="getLaneLightCount.bind(this)"
+        [getLaneLight]="getLaneLight.bind(this)"
         [fetchCurrentState]="fetchCurrentState.bind(this)"
       >
       </app-road>

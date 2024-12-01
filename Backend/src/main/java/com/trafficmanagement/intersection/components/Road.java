@@ -76,7 +76,7 @@ public class Road {
     }
 
     private static void switchLightsForLights(TrafficLights trafficLights) {
-        switch(trafficLights.getCurrentLight()) {
+        switch (trafficLights.getCurrentLight()) {
             case LightColor.RED -> trafficLights.setGreenLight();
             case LightColor.GREEN -> trafficLights.setRedLight();
         }
@@ -99,10 +99,18 @@ public class Road {
     }
 
     public List<RoadLineStatus> getRoadLineStatuses() {
-        var result = new ArrayList<RoadLineStatus>();
-        for(Map.Entry<RoadLine, TrafficLights> roadLineLight : this.roadLineLights.entrySet()) {
-            result.add(new RoadLineStatus(roadLineLight.getKey().getAllowedDirections(),  roadLineLight.getValue().getCurrentLight(), roadLineLight.getKey().getVehicleCount()));
-        }
-        return result;
+        return this.roadLineLights.entrySet().stream()
+                .map(roadLineLight -> new RoadLineStatus(
+                        roadLineLight.getKey().getAllowedDirections(),
+                        roadLineLight.getValue().getCurrentLight(),
+                        roadLineLight.getKey().getVehicleCount()))
+                .toList();
     }
+
+    public List<TurnDirection> getAllowedDirections() {
+        return roadLineLights.keySet().stream()
+                .flatMap(roadLine -> roadLine.getAllowedDirections().stream())
+                .toList();
+    }
+
 }

@@ -25,8 +25,10 @@ public class DirectionSelector {
 
     public List<DirectionTurnPair> getDirectionsToHandle() {
         Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts = vehicleCounter.calculateVehiclesOnEachRoadLine();
-        List<DirectionTurnPair> mostNeeded = mostOverloadedDirectionFinder.findMostNeededDirections(directionVehicleCounts);
-        List<DirectionTurnPair> starvedDirections = mostStarvedDirectionFinder.getStarvedDirectionsIfExists(directionVehicleCounts);
+        List<DirectionTurnPair> mostNeeded = mostOverloadedDirectionFinder.findMostNeededDirections(
+                directionVehicleCounts);
+        List<DirectionTurnPair> starvedDirections = mostStarvedDirectionFinder.getStarvedDirectionsIfExists(
+                directionVehicleCounts);
 
         logger.info("Found directions: mostNeeded: {} , starvedDirections: {}", mostNeeded, starvedDirections);
 

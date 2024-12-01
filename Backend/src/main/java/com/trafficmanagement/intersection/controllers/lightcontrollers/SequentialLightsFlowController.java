@@ -3,16 +3,16 @@ package com.trafficmanagement.intersection.controllers.lightcontrollers;
 import com.trafficmanagement.intersection.components.Road;
 import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.LightColor;
-import com.trafficmanagement.intersection.constants.TurnDirection;
 import com.trafficmanagement.intersection.constants.TrafficConfig;
+import com.trafficmanagement.intersection.constants.TurnDirection;
 
 import java.security.InvalidParameterException;
 import java.util.EnumSet;
 import java.util.Map;
 
-public class SimpleLightsFlowController extends LightsController {
+public class SequentialLightsFlowController extends LightsController {
 
-    public SimpleLightsFlowController(Map<CompassDirection, Road> roads) {
+    public SequentialLightsFlowController(Map<CompassDirection, Road> roads) {
         super(roads);
 
         validateRoadsMap(roads);
@@ -25,7 +25,7 @@ public class SimpleLightsFlowController extends LightsController {
         EnumSet<CompassDirection> providedDirections = EnumSet.copyOf(roads.keySet());
 
         EnumSet<CompassDirection> missingDirections = EnumSet.complementOf(providedDirections);
-        if(!missingDirections.isEmpty()) {
+        if (!missingDirections.isEmpty()) {
             throw new IllegalArgumentException("Roads map is missing directions: " + missingDirections);
         }
     }
@@ -55,9 +55,11 @@ public class SimpleLightsFlowController extends LightsController {
     }
 
     private EnumSet<CompassDirection> getOppositeCompassDirections() {
-        if (currentCompassDirections.contains(CompassDirection.SOUTH) && currentCompassDirections.contains(CompassDirection.NORTH)) {
+        if (currentCompassDirections.contains(CompassDirection.SOUTH) && currentCompassDirections.contains(
+                CompassDirection.NORTH)) {
             return EnumSet.of(CompassDirection.EAST, CompassDirection.WEST);
-        } else if (currentCompassDirections.contains(CompassDirection.WEST) && currentCompassDirections.contains(CompassDirection.EAST)) {
+        } else if (currentCompassDirections.contains(CompassDirection.WEST) && currentCompassDirections.contains(
+                CompassDirection.EAST)) {
             return EnumSet.of(CompassDirection.SOUTH, CompassDirection.NORTH);
         }
         throw new InvalidParameterException("Unexpected compass directions were provided");

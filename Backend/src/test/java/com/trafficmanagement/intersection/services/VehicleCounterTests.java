@@ -14,7 +14,7 @@ import java.util.EnumSet;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 class VehicleCounterTest {
 
@@ -55,7 +55,8 @@ class VehicleCounterTest {
                 northRoadLineLeft, trafficLights
         ));
 
-        when(northRoadLineStraightRight.getAllowedDirections()).thenReturn(EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT));
+        when(northRoadLineStraightRight.getAllowedDirections()).thenReturn(
+                EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT));
         when(northRoadLineStraightRight.getVehicleCountForTurnDirection(TurnDirection.RIGHT)).thenReturn(3);
         when(northRoadLineStraightRight.getVehicleCountForTurnDirection(TurnDirection.STRAIGHT)).thenReturn(2);
 
@@ -68,7 +69,8 @@ class VehicleCounterTest {
                 southRoadLineAllDirections, trafficLights
         ));
 
-        when(southRoadLineAllDirections.getAllowedDirections()).thenReturn(EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT));
+        when(southRoadLineAllDirections.getAllowedDirections()).thenReturn(
+                EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT));
         when(southRoadLineAllDirections.getVehicleCountForTurnDirection(TurnDirection.LEFT)).thenReturn(5);
         when(southRoadLineAllDirections.getVehicleCountForTurnDirection(TurnDirection.STRAIGHT)).thenReturn(1);
         when(southRoadLineAllDirections.getVehicleCountForTurnDirection(TurnDirection.RIGHT)).thenReturn(2);

@@ -44,9 +44,13 @@ class TrafficLightsSwitcherTests {
 
         var trafficLightsSwitcher = new TrafficLightsSwitcher(roads);
 
-        Assertions.assertEquals(LightColor.GREEN, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.NORTH, TurnDirection.STRAIGHT));
-        Assertions.assertEquals(LightColor.GREEN, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
-        Assertions.assertEquals(LightColor.RED, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.EAST, TurnDirection.STRAIGHT));
-        Assertions.assertEquals(LightColor.RED, trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.WEST, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.GREEN,
+                trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.NORTH, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.GREEN,
+                trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.SOUTH, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.RED,
+                trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.EAST, TurnDirection.STRAIGHT));
+        Assertions.assertEquals(LightColor.RED,
+                trafficLightsSwitcher.getCurrentTrafficLight(CompassDirection.WEST, TurnDirection.STRAIGHT));
     }
 }

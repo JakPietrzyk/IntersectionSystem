@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {IntersectionComponent} from './intersection.component/intersection.component';
+import {IntersectionComponent} from './intersection/intersection.component';
 
 @Component({
   selector: 'app-root',

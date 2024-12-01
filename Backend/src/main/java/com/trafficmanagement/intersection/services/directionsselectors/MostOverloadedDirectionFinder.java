@@ -11,7 +11,8 @@ import java.util.Map;
 import static com.trafficmanagement.intersection.helpers.CollisionDetector.doDirectionsCollide;
 
 public class MostOverloadedDirectionFinder {
-    public List<DirectionTurnPair> findMostNeededDirections(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
+    public List<DirectionTurnPair> findMostNeededDirections(
+            Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
         List<DirectionTurnPair> allDirections = getAllDirectionsListSortedByVehicleCount(directionVehicleCounts);
 
         if (allDirections.isEmpty()) {
@@ -26,7 +27,8 @@ public class MostOverloadedDirectionFinder {
     }
 
 
-    private static List<DirectionTurnPair> getAllDirectionsListSortedByVehicleCount(Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
+    private static List<DirectionTurnPair> getAllDirectionsListSortedByVehicleCount(
+            Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts) {
         return directionVehicleCounts.entrySet().stream()
                 .flatMap(entry -> entry.getValue().entrySet().stream()
                         .map(turnEntry -> new DirectionTurnPair(entry.getKey(), turnEntry.getKey())))

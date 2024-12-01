@@ -10,25 +10,32 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Map;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 class StarvationCounterManagerTest {
     @Mock
     private VehicleCounter mockVehicleCounter;
+    @Mock
+    private Road mockRoad;
+
     private StarvationCounterManager starvationCounterManager;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        when(mockRoad.getAllowedDirections()).thenReturn(
+                List.of(TurnDirection.STRAIGHT, TurnDirection.LEFT, TurnDirection.RIGHT));
+
         Map<CompassDirection, Road> roads = Map.of(
-                CompassDirection.NORTH, mock(Road.class),
-                CompassDirection.SOUTH, mock(Road.class),
-                CompassDirection.WEST, mock(Road.class)
+                CompassDirection.NORTH, mockRoad,
+                CompassDirection.SOUTH, mockRoad,
+                CompassDirection.WEST, mockRoad
         );
 
         starvationCounterManager = new StarvationCounterManager(roads, mockVehicleCounter);
@@ -54,7 +61,8 @@ class StarvationCounterManagerTest {
                         CompassDirection.SOUTH, Map.of(TurnDirection.LEFT, 1, TurnDirection.STRAIGHT, 0)
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class), EnumSet.noneOf(TurnDirection.class));
+        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class),
+                EnumSet.noneOf(TurnDirection.class));
 
         var starvationCounters = starvationCounterManager.getStarvationCounters();
         assertEquals(0, starvationCounters.get(CompassDirection.NORTH).get(TurnDirection.LEFT));
@@ -70,7 +78,8 @@ class StarvationCounterManagerTest {
                         CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 2)
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class), EnumSet.noneOf(TurnDirection.class));
+        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class),
+                EnumSet.noneOf(TurnDirection.class));
 
         var starvationCounters = starvationCounterManager.getStarvationCounters();
         assertEquals(1, starvationCounters.get(CompassDirection.NORTH).get(TurnDirection.LEFT));
@@ -83,11 +92,15 @@ class StarvationCounterManagerTest {
                         CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 1)
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class), EnumSet.noneOf(TurnDirection.class));
-        assertEquals(1, starvationCounterManager.getStarvationCounters().get(CompassDirection.NORTH).get(TurnDirection.LEFT));
+        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class),
+                EnumSet.noneOf(TurnDirection.class));
+        assertEquals(1,
+                starvationCounterManager.getStarvationCounters().get(CompassDirection.NORTH).get(TurnDirection.LEFT));
 
-        starvationCounterManager.clearStarvationForDirection(new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT));
-        assertEquals(0, starvationCounterManager.getStarvationCounters().get(CompassDirection.NORTH).get(TurnDirection.LEFT));
+        starvationCounterManager.clearStarvationForDirection(
+                new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT));
+        assertEquals(0,
+                starvationCounterManager.getStarvationCounters().get(CompassDirection.NORTH).get(TurnDirection.LEFT));
     }
 
     @Test
@@ -99,7 +112,8 @@ class StarvationCounterManagerTest {
                         CompassDirection.WEST, Map.of(TurnDirection.STRAIGHT, 1)
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.of(CompassDirection.SOUTH), EnumSet.of(TurnDirection.STRAIGHT));
+        starvationCounterManager.updateStarvationCounters(EnumSet.of(CompassDirection.SOUTH),
+                EnumSet.of(TurnDirection.STRAIGHT));
 
         var starvationCounters = starvationCounterManager.getStarvationCounters();
         assertEquals(0, starvationCounters.get(CompassDirection.SOUTH).get(TurnDirection.STRAIGHT));

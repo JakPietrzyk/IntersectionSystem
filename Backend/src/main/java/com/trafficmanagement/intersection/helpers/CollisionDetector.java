@@ -6,7 +6,7 @@ import com.trafficmanagement.intersection.models.DirectionTurnPair;
 
 public class CollisionDetector {
     public static boolean doDirectionsCollide(DirectionTurnPair a,
-                                        DirectionTurnPair b) {
+                                              DirectionTurnPair b) {
         CompassDirection directionA = a.compassDirection();
         CompassDirection directionB = b.compassDirection();
         TurnDirection turnA = a.turnDirection();
@@ -27,9 +27,10 @@ public class CollisionDetector {
             }
             return false;
         } else {
-            return directionA != directionB;
+            return true;
         }
     }
 
-    private CollisionDetector(){}
+    private CollisionDetector() {
+    }
 }

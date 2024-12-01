@@ -1,0 +1,1 @@
+export type CompassDirection = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST';
