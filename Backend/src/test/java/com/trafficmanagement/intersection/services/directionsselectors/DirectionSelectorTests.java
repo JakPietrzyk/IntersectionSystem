@@ -12,8 +12,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,7 @@ class DirectionSelectorTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        directionSelector = new DirectionSelector(starvationCounterManager, vehicleCounter);
+        directionSelector = new DirectionSelector(Set.of(), starvationCounterManager, vehicleCounter);
     }
 
     @AfterEach
@@ -40,43 +41,43 @@ class DirectionSelectorTest {
 
     @Test
     void shouldReturnStarvedDirections() {
-        Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts = Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 5),
-                CompassDirection.EAST, Map.of(TurnDirection.STRAIGHT, 3)
+        Map<DirectionTurnPair, Integer> directionVehicleCounts = Map.of(
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 5,
+                new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT)), 3
         );
 
         when(starvationCounterManager.getStarvationCounters()).thenReturn(Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 15),
-                CompassDirection.EAST, Map.of(TurnDirection.STRAIGHT, 3)
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 15,
+                new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT)), 3
         ));
 
         when(vehicleCounter.calculateVehiclesOnEachRoadLine()).thenReturn(directionVehicleCounts);
 
-        List<DirectionTurnPair> result = directionSelector.getDirectionsToHandle();
+        Set<DirectionTurnPair> result = directionSelector.getDirectionsToHandle();
 
         assertEquals(1, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT), result.getFirst());
+        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), result.iterator().next());
     }
 
     @Test
     void shouldReturnMostNeededDirection() {
-        Map<CompassDirection, Map<TurnDirection, Integer>> directionVehicleCounts = Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 5),
-                CompassDirection.EAST, Map.of(TurnDirection.STRAIGHT, 3),
-                CompassDirection.WEST, Map.of(TurnDirection.LEFT, 15)
+        Map<DirectionTurnPair, Integer> directionVehicleCounts = Map.of(
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 5,
+                new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT)), 3,
+                new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.LEFT)), 15
         );
 
         when(starvationCounterManager.getStarvationCounters()).thenReturn(Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 4),
-                CompassDirection.EAST, Map.of(TurnDirection.STRAIGHT, 3),
-                CompassDirection.WEST, Map.of(TurnDirection.LEFT, 3)
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 4,
+                new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT)), 3,
+                new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.LEFT)), 3
         ));
 
         when(vehicleCounter.calculateVehiclesOnEachRoadLine()).thenReturn(directionVehicleCounts);
 
-        List<DirectionTurnPair> result = directionSelector.getDirectionsToHandle();
+        Set<DirectionTurnPair> result = directionSelector.getDirectionsToHandle();
 
         assertEquals(1, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.WEST, TurnDirection.LEFT), result.getFirst());
+        assertEquals(new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.LEFT)), result.iterator().next());
     }
 }

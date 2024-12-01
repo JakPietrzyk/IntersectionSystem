@@ -6,10 +6,12 @@ import com.trafficmanagement.intersection.models.DirectionTurnPair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MostOverloadedDirectionFinderTest {
 
@@ -22,54 +24,54 @@ class MostOverloadedDirectionFinderTest {
 
     @Test
     void shouldReturnEmptyListForEmptyMap() {
-        List<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(Map.of());
-
-        assertEquals(List.of(), result);
+        Set<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(Map.of());
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void shouldReturnOneNonBlockingOverloadedDirections() {
-        Map<CompassDirection, Map<TurnDirection, Integer>> input = Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 20),
-                CompassDirection.SOUTH, Map.of(TurnDirection.STRAIGHT, 10),
-                CompassDirection.EAST, Map.of(TurnDirection.STRAIGHT, 0),
-                CompassDirection.WEST, Map.of(TurnDirection.STRAIGHT, 19)
+        Map<DirectionTurnPair, Integer> input = Map.of(
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 20,
+                new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.STRAIGHT)), 10,
+                new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT)), 0,
+                new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.STRAIGHT)), 19
         );
 
-        List<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
+        Set<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
 
         assertEquals(1, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT), result.getFirst());
+        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), result.iterator().next());
     }
 
     @Test
     void shouldReturnTwoNonBlockingOverloadedDirections() {
-        Map<CompassDirection, Map<TurnDirection, Integer>> input = Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 20),
-                CompassDirection.SOUTH, Map.of(TurnDirection.LEFT, 10),
-                CompassDirection.EAST, Map.of(TurnDirection.STRAIGHT, 0),
-                CompassDirection.WEST, Map.of(TurnDirection.STRAIGHT, 19)
+        Map<DirectionTurnPair, Integer> input = Map.of(
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 20,
+                new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT)), 10,
+                new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT)), 0,
+                new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.STRAIGHT)), 19
         );
 
-        List<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
+        Set<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
 
         assertEquals(2, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT), result.getFirst());
-        assertEquals(new DirectionTurnPair(CompassDirection.SOUTH, TurnDirection.LEFT), result.getLast());
+        assertTrue(result.contains(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
+        assertTrue(result.contains(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT))));
 
     }
 
     @Test
     void shouldReturnResultsSortedInVehicleCountOrder() {
-        Map<CompassDirection, Map<TurnDirection, Integer>> input = Map.of(
-                CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 10, TurnDirection.RIGHT, 5),
-                CompassDirection.SOUTH, Map.of(TurnDirection.STRAIGHT, 15)
+        Map<DirectionTurnPair, Integer> input = Map.of(
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), 10,
+                new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT)), 5,
+                new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.STRAIGHT)), 15
         );
 
-        List<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
+        Set<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
 
         assertEquals(2, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.SOUTH, TurnDirection.STRAIGHT), result.get(0));
-        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.RIGHT), result.get(1));
+        assertTrue(result.contains(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.STRAIGHT))));
+        assertTrue(result.contains(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT))));
     }
 }

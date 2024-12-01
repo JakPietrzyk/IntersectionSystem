@@ -5,6 +5,7 @@ import com.trafficmanagement.intersection.components.TrafficLights;
 import com.trafficmanagement.intersection.components.roadlines.RoadLine;
 import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.TurnDirection;
+import com.trafficmanagement.intersection.models.DirectionTurnPair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -55,13 +56,12 @@ class VehicleCounterTest {
                 northRoadLineLeft, trafficLights
         ));
 
+        when(northRoadLineStraightRight.getVehicleCount()).thenReturn(5);
+        when(northRoadLineLeft.getVehicleCount()).thenReturn(4);
+
         when(northRoadLineStraightRight.getAllowedDirections()).thenReturn(
                 EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT));
-        when(northRoadLineStraightRight.getVehicleCountForTurnDirection(TurnDirection.RIGHT)).thenReturn(3);
-        when(northRoadLineStraightRight.getVehicleCountForTurnDirection(TurnDirection.STRAIGHT)).thenReturn(2);
-
         when(northRoadLineLeft.getAllowedDirections()).thenReturn(EnumSet.of(TurnDirection.LEFT));
-        when(northRoadLineLeft.getVehicleCountForTurnDirection(TurnDirection.LEFT)).thenReturn(4);
     }
 
     private void mockSouthRoad() {
@@ -69,58 +69,55 @@ class VehicleCounterTest {
                 southRoadLineAllDirections, trafficLights
         ));
 
+        when(southRoadLineAllDirections.getVehicleCount()).thenReturn(8);
         when(southRoadLineAllDirections.getAllowedDirections()).thenReturn(
                 EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT));
-        when(southRoadLineAllDirections.getVehicleCountForTurnDirection(TurnDirection.LEFT)).thenReturn(5);
-        when(southRoadLineAllDirections.getVehicleCountForTurnDirection(TurnDirection.STRAIGHT)).thenReturn(1);
-        when(southRoadLineAllDirections.getVehicleCountForTurnDirection(TurnDirection.RIGHT)).thenReturn(2);
     }
 
     @Test
     void shouldCalculateCorrectly() {
-        Map<CompassDirection, Map<TurnDirection, Integer>> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
+        Map<DirectionTurnPair, Integer> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
 
-        assertEquals(2, result.size());
+        assertEquals(3, result.size());
 
-        Map<TurnDirection, Integer> northCounts = result.get(CompassDirection.NORTH);
-        assertEquals(3, northCounts.get(TurnDirection.RIGHT));
-        assertEquals(2, northCounts.get(TurnDirection.STRAIGHT));
-        assertEquals(4, northCounts.get(TurnDirection.LEFT));
-
-        Map<TurnDirection, Integer> southCounts = result.get(CompassDirection.SOUTH);
-        assertEquals(5, southCounts.get(TurnDirection.LEFT));
-        assertEquals(1, southCounts.get(TurnDirection.STRAIGHT));
-        assertEquals(2, southCounts.get(TurnDirection.RIGHT));
+        assertEquals(5, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
+        assertEquals(4, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
+        assertEquals(8, result.get(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
     }
 
     @Test
     void shouldCalculateCorrectlyIfOneRoadIsEmpty() {
-        when(roadNorth.getRoadLineLights()).thenReturn(Map.of());
+        when(northRoadLineStraightRight.getVehicleCount()).thenReturn(0);
+        when(northRoadLineLeft.getVehicleCount()).thenReturn(0);
 
-        Map<CompassDirection, Map<TurnDirection, Integer>> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
+        Map<DirectionTurnPair, Integer> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
 
-        assertEquals(2, result.size());
-        assertEquals(0, result.get(CompassDirection.NORTH).size());
-        assertEquals(3, result.get(CompassDirection.SOUTH).size());
+        assertEquals(3, result.size());
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
+        assertEquals(8, result.get(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
     }
 
     @Test
     void shouldReturnEmptyResultsForEachRoadIfNoRoads() {
-        when(roadNorth.getRoadLineLights()).thenReturn(Map.of());
-        when(roadSouth.getRoadLineLights()).thenReturn(Map.of());
+        when(northRoadLineStraightRight.getVehicleCount()).thenReturn(0);
+        when(northRoadLineLeft.getVehicleCount()).thenReturn(0);
+        when(southRoadLineAllDirections.getVehicleCount()).thenReturn(0);
 
-        Map<CompassDirection, Map<TurnDirection, Integer>> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
+        Map<DirectionTurnPair, Integer> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
 
-        assertEquals(2, result.size());
-        assertEquals(0, result.get(CompassDirection.NORTH).size());
-        assertEquals(0, result.get(CompassDirection.SOUTH).size());
+        assertEquals(3, result.size());
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
+
     }
 
     @Test
     void shouldReturnEmptyResultIfNoRoads() {
         vehicleCounter = new VehicleCounter(Map.of());
 
-        Map<CompassDirection, Map<TurnDirection, Integer>> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
+        var result = vehicleCounter.calculateVehiclesOnEachRoadLine();
 
         assertEquals(0, result.size());
     }

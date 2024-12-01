@@ -10,7 +10,7 @@ Run the Main.class with the following arguments to execute a simulation:
 
 ```shell
 mvn clean package
-java -jar target/IntersectionSystem-1.0-SNAPSHOT.jar -sim -it intensity | sequential -i input.json -o output.json
+java -jar target/IntersectionSystem-1.0-SNAPSHOT.jar -sim -it <intensity OR sequential> -i input.json -o output.json
 
 
 -sim: Starts the simulation mode.
@@ -34,13 +34,19 @@ docker-compose up
 ```
 Once the services are up, you can access the web interface in your browser to control and monitor the traffic intersection system visually.
 
+## Na czym głównie się skupiłem
+The main extension of the basic requirement in this task is the ability to implement any type of intersection. The backend correctly handles situations where there are multiple lanes on an approach road. There can be several lanes in the same direction or in different directions.
+
+Unfortunately, in order to create a different intersection configuration, the object instance in the code must be changed.
+
+Additionally, I have added a simple graphical interface that supports a single intersection configuration, which I selected.
+
+Moreover, I have enabled the possibility to run the application using Docker Compose.
 
 ## Algorithm Overview
 Incoming vehicles are assigned to specific lanes based on their desired direction (e.g., left, straight, or right).
 Vehicles wait at the intersection until their lane’s traffic light turns green.
 
-### Intersections
-The code allows the user to define custom road setups. From within the code, you can specify any type of roads and lane configurations, and the algorithm will adapt accordingly to provide the most optimal results based on the given setup. Although interface currently supports only one predefined road setup.
 
 ### Sequential Intersection
 The traffic lights operate in predefined cycles, alternating between directions and types of movements as follows:

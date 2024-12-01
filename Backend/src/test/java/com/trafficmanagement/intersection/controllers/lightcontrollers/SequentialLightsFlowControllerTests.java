@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 
 import static com.trafficmanagement.intersection.constants.TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH;
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,9 +20,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class SequentialLightsFlowControllerTests {
     private SequentialLightsFlowController sequentialLightsFlowController;
 
+    private Map<CompassDirection, Road> roads;
+
     @BeforeEach
     public void setUp() {
-        var roads = Map.of(
+        var southStraightTrafficLights = new TrafficLights();
+        southStraightTrafficLights.setGreenLight();
+
+        roads = Map.of(
                 CompassDirection.NORTH, new Road(Map.of(
                         new LeftTurnRoadLine(), new TrafficLights(),
                         new StraightOrRightRoadLine(), new TrafficLights()
@@ -32,7 +38,7 @@ class SequentialLightsFlowControllerTests {
                 )),
                 CompassDirection.SOUTH, new Road(Map.of(
                         new LeftTurnRoadLine(), new TrafficLights(),
-                        new StraightOrRightRoadLine(), new TrafficLights()
+                        new StraightOrRightRoadLine(), southStraightTrafficLights
                 )),
                 CompassDirection.WEST, new Road(Map.of(
                         new LeftTurnRoadLine(), new TrafficLights(),
@@ -44,15 +50,13 @@ class SequentialLightsFlowControllerTests {
 
     @Test
     void shouldSwitchLightsAfterDefinedSteps() {
-        assertEquals(LightColor.GREEN, this.sequentialLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH,
-                TurnDirection.STRAIGHT));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         for (int i = 0; i < STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
             sequentialLightsFlowController.makeStep();
         }
 
-        assertEquals(LightColor.RED, this.sequentialLightsFlowController.getCurrentLightColor(CompassDirection.SOUTH,
-                TurnDirection.STRAIGHT));
+        assertEquals(LightColor.RED, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
     }
 
     @Test

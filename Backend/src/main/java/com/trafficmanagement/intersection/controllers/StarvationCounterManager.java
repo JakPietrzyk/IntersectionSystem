@@ -2,18 +2,15 @@ package com.trafficmanagement.intersection.controllers;
 
 import com.trafficmanagement.intersection.components.Road;
 import com.trafficmanagement.intersection.constants.CompassDirection;
-import com.trafficmanagement.intersection.constants.TurnDirection;
 import com.trafficmanagement.intersection.models.DirectionTurnPair;
 import com.trafficmanagement.intersection.services.VehicleCounter;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class StarvationCounterManager {
-    private final Map<CompassDirection, Map<TurnDirection, Integer>> starvationCounters = new HashMap<>();
+    private final Map<DirectionTurnPair, Integer> starvationCounters = new HashMap<>();
     private final VehicleCounter vehicleCounter;
 
     public StarvationCounterManager(Map<CompassDirection, Road> roads, VehicleCounter vehicleCounter) {
@@ -26,62 +23,43 @@ public class StarvationCounterManager {
             CompassDirection direction = entry.getKey();
             Road road = entry.getValue();
 
-            Map<TurnDirection, Integer> turnCounters = new EnumMap<>(TurnDirection.class);
-
-            for (TurnDirection turn : road.getAllowedDirections()) {
-                turnCounters.put(turn, 0);
-            }
-
-            starvationCounters.put(direction, turnCounters);
+            road.getRoadLineLights().forEach((roadLine, light) ->
+                    starvationCounters.put(new DirectionTurnPair(direction, roadLine.getAllowedDirections()), 0)
+            );
         }
     }
 
 
-    public void updateStarvationCounters(Set<CompassDirection> currentCompassDirection,
-                                         Set<TurnDirection> currentTurnDirection) {
+    public void updateStarvationCounters(Set<DirectionTurnPair> currentDirection) {
         for (var entry : starvationCounters.entrySet()) {
-            CompassDirection compassDirection = entry.getKey();
-            Map<TurnDirection, Integer> turnCounters = entry.getValue();
-
-            for (TurnDirection turnDirection : turnCounters.keySet()) {
-                updateStarvationForDirectionsIfNeeded(turnDirection, compassDirection, turnCounters,
-                        currentCompassDirection, currentTurnDirection);
-            }
+            updateStarvationForDirectionsIfNeeded(entry.getKey(), entry.getValue(), currentDirection);
         }
     }
 
-    private void updateStarvationForDirectionsIfNeeded(TurnDirection turnDirection, CompassDirection compassDirection,
-                                                       Map<TurnDirection, Integer> turnCounters,
-                                                       Set<CompassDirection> currentCompassDirection,
-                                                       Set<TurnDirection> currentTurnDirection) {
-        if (isRoadLineForDirectionEmpty(turnDirection, compassDirection)
-                && isDirectionOrTurnInactive(turnDirection, compassDirection, currentCompassDirection,
-                currentTurnDirection)) {
-            turnCounters.put(turnDirection, turnCounters.get(turnDirection) + 1);
+    private void updateStarvationForDirectionsIfNeeded(DirectionTurnPair directionTurnPair,
+                                                       int currentCounter,
+                                                       Set<DirectionTurnPair> currentDirections) {
+        if (isRoadLineForDirectionEmpty(directionTurnPair)
+                && isDirectionOrTurnInactive(directionTurnPair, currentDirections)) {
+            starvationCounters.put(directionTurnPair, currentCounter + 1);
         }
     }
 
-    private boolean isRoadLineForDirectionEmpty(TurnDirection turnDirection, CompassDirection compassDirection) {
+    private boolean isRoadLineForDirectionEmpty(DirectionTurnPair directionTurnPair) {
         return vehicleCounter.calculateVehiclesOnEachRoadLine()
-                .getOrDefault(compassDirection, Map.of())
-                .getOrDefault(turnDirection, 0) > 0;
+                .getOrDefault(directionTurnPair, 0) > 0;
     }
 
-    private boolean isDirectionOrTurnInactive(TurnDirection turnDirection, CompassDirection compassDirection,
-                                              Set<CompassDirection> currentCompassDirections,
-                                              Set<TurnDirection> currentTurnDirections) {
-        return !currentCompassDirections.contains(compassDirection) || !currentTurnDirections.contains(turnDirection);
+    private boolean isDirectionOrTurnInactive(DirectionTurnPair directionTurnPair,
+                                              Set<DirectionTurnPair> currentDirections) {
+        return !currentDirections.contains(directionTurnPair);
     }
 
-    public Map<CompassDirection, Map<TurnDirection, Integer>> getStarvationCounters() {
-        return starvationCounters.entrySet().stream()
-                .collect(Collectors.toUnmodifiableMap(
-                        Map.Entry::getKey,
-                        entry -> Map.copyOf(entry.getValue())
-                ));
+    public Map<DirectionTurnPair, Integer> getStarvationCounters() {
+        return Map.copyOf(starvationCounters);
     }
 
     public void clearStarvationForDirection(DirectionTurnPair directionTurnPair) {
-        starvationCounters.get(directionTurnPair.compassDirection()).put(directionTurnPair.turnDirection(), 0);
+        starvationCounters.put(directionTurnPair, 0);
     }
 }

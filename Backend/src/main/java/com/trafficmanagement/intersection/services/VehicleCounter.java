@@ -1,14 +1,11 @@
 package com.trafficmanagement.intersection.services;
 
 import com.trafficmanagement.intersection.components.Road;
-import com.trafficmanagement.intersection.components.roadlines.RoadLine;
 import com.trafficmanagement.intersection.constants.CompassDirection;
-import com.trafficmanagement.intersection.constants.TurnDirection;
+import com.trafficmanagement.intersection.models.DirectionTurnPair;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class VehicleCounter {
     private final Map<CompassDirection, Road> roads;
@@ -17,33 +14,15 @@ public class VehicleCounter {
         this.roads = roads;
     }
 
-    public Map<CompassDirection, Map<TurnDirection, Integer>> calculateVehiclesOnEachRoadLine() {
-        return roads.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> {
-                            Map<TurnDirection, Integer> turnCounts = new EnumMap<>(TurnDirection.class);
-                            addAllVehiclesOnEachRoadLineForRoad(entry, turnCounts);
-                            return turnCounts;
-                        }
-                ));
-    }
+    public Map<DirectionTurnPair, Integer> calculateVehiclesOnEachRoadLine() {
+        Map<DirectionTurnPair, Integer> result = new HashMap<>();
+        roads.forEach((compassDirection, road) -> road.getRoadLineLights().forEach((roadLine, light) -> {
+            var count = roadLine.getVehicleCount();
+            var key = new DirectionTurnPair(compassDirection, roadLine.getAllowedDirections());
+            var currentValue = result.getOrDefault(key, 0);
+            result.put(key, currentValue + count);
+        }));
 
-    private static void addAllVehiclesOnEachRoadLineForRoad(Map.Entry<CompassDirection, Road> entry,
-                                                            Map<TurnDirection, Integer> turnCounts) {
-        for (RoadLine line : getRoadLines(entry)) {
-            for (TurnDirection direction : line.getAllowedDirections()) {
-                addCountedVehicles(line, direction, turnCounts);
-            }
-        }
-    }
-
-    private static Set<RoadLine> getRoadLines(Map.Entry<CompassDirection, Road> entry) {
-        return entry.getValue().getRoadLineLights().keySet();
-    }
-
-    private static void addCountedVehicles(RoadLine line, TurnDirection direction,
-                                           Map<TurnDirection, Integer> turnCounts) {
-        turnCounts.merge(direction, line.getVehicleCountForTurnDirection(direction), Integer::sum);
+        return result;
     }
 }

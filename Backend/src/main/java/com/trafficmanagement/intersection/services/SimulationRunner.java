@@ -2,6 +2,7 @@ package com.trafficmanagement.intersection.services;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.trafficmanagement.intersection.components.intersections.Intersection;
 import com.trafficmanagement.intersection.constants.AvailableCommands;
@@ -58,7 +59,7 @@ public class SimulationRunner {
     }
 
     public void saveSimulationResult() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
         Map<String, Object> result = Map.of("stepStatuses", intersection.getStepStatuses());
         String resultJson = objectMapper.writeValueAsString(result);

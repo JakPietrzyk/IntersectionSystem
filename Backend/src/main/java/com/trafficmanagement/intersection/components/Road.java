@@ -7,6 +7,7 @@ import com.trafficmanagement.intersection.models.Vehicle;
 import com.trafficmanagement.intersection.models.statuses.RoadLineStatus;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Road {
@@ -22,10 +23,25 @@ public class Road {
         roadLines.forEach(roadLine -> roadLineLights.get(roadLine).setGreenLight());
     }
 
+    public void setGreenTrafficLight(Set<TurnDirection> directions) {
+        var roadLines = getRoadLinesForDirections(directions).collect(Collectors.toSet());
+        roadLines.forEach(roadLine -> roadLineLights.get(roadLine).setGreenLight());
+    }
+
     private Stream<RoadLine> getRoadLinesForDirection(TurnDirection direction) {
         return roadLineLights.keySet()
                 .stream()
                 .filter(roadLine -> roadLine.getAllowedDirections().contains(direction));
+    }
+
+    private Stream<RoadLine> getRoadLinesForDirections(Set<TurnDirection> directions) {
+        return roadLineLights.keySet()
+                .stream()
+                .filter(roadLine -> {
+                    var allowedDirections = new HashSet<>(roadLine.getAllowedDirections());
+                    allowedDirections.removeAll(directions);
+                    return allowedDirections.isEmpty();
+                });
     }
 
     public void setRedTrafficLightForAllRoadLines() {
@@ -35,18 +51,6 @@ public class Road {
     private Optional<RoadLine> getFirstRoadLineForDirection(TurnDirection direction) {
         return getRoadLinesForDirection(direction)
                 .findFirst();
-    }
-
-    public boolean isGreenTrafficLight(TurnDirection direction) {
-        return getFirstRoadLineForDirection(direction)
-                .map(roadLine -> roadLineLights.get(roadLine).isGreenLight())
-                .orElse(false);
-    }
-
-    public void removeVehicleFromRoadLine(TurnDirection direction) {
-        var roadLines = getRoadLinesForDirection(direction);
-
-        roadLines.forEach(RoadLine::removeFirstVehicle);
     }
 
     public void addVehicleToRoadLine(Vehicle vehicle) {
@@ -61,40 +65,15 @@ public class Road {
                 .orElse(0);
     }
 
-    public LightColor getCurrentLightColor(TurnDirection direction) {
-        return getFirstRoadLineForDirection(direction)
+    public LightColor getCurrentLightColor(Set<TurnDirection> directions) {
+        return getRoadLinesForDirections(directions)
+                .findAny()
                 .map(roadLine -> roadLineLights.get(roadLine).getCurrentLight())
                 .orElse(LightColor.RED);
     }
 
-    public void changeLightColor(TurnDirection direction) {
-        var trafficLights = getRoadLinesForDirection(direction)
-                .map(roadLineLights::get);
-
-        trafficLights.forEach(Road::switchLightsForLights);
-    }
-
-    private static void switchLightsForLights(TrafficLights trafficLights) {
-        switch (trafficLights.getCurrentLight()) {
-            case LightColor.RED -> trafficLights.setGreenLight();
-            case LightColor.GREEN -> trafficLights.setRedLight();
-        }
-    }
-
-    public Optional<Vehicle> peekFirstVehicle(TurnDirection direction) {
-        return getFirstRoadLineForDirection(direction)
-                .map(RoadLine::peekFirstVehicle);
-    }
-
     public Map<RoadLine, TrafficLights> getRoadLineLights() {
         return roadLineLights;
-    }
-
-    public Set<TurnDirection> getAllowedDirectionsForTurn(TurnDirection primaryTurn) {
-        Optional<RoadLine> roadLine = getFirstRoadLineForDirection(primaryTurn);
-
-        return roadLine.map(RoadLine::getAllowedDirections)
-                .orElse(EnumSet.noneOf(TurnDirection.class));
     }
 
     public List<RoadLineStatus> getRoadLineStatuses() {
@@ -106,9 +85,9 @@ public class Road {
                 .toList();
     }
 
-    public List<TurnDirection> getAllowedDirections() {
+    public Set<TurnDirection> getAllowedDirections() {
         return roadLineLights.keySet().stream()
                 .flatMap(roadLine -> roadLine.getAllowedDirections().stream())
-                .toList();
+                .collect(Collectors.toSet());
     }
 }

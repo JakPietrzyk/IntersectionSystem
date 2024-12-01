@@ -3,6 +3,8 @@ package com.trafficmanagement.intersection.models;
 import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.TurnDirection;
 
-public record DirectionTurnPair(CompassDirection compassDirection, TurnDirection turnDirection) {
+import java.util.Set;
+
+public record DirectionTurnPair(CompassDirection compassDirection, Set<TurnDirection> turnDirections) {
 }
 

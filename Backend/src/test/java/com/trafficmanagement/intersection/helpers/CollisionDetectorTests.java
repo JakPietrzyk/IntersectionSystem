@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.EnumSet;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,33 +29,33 @@ class CollisionDetectorTests {
     private static Stream<Arguments> provideTestCasesForCollision() {
         return Stream.of(
                 Arguments.of(
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.STRAIGHT),
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.STRAIGHT),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.STRAIGHT)),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.STRAIGHT)),
                         false
                 ),
                 Arguments.of(
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT),
-                        new DirectionTurnPair(CompassDirection.SOUTH, TurnDirection.RIGHT),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)),
+                        new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.RIGHT)),
                         true
                 ),
                 Arguments.of(
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT),
-                        new DirectionTurnPair(CompassDirection.SOUTH, TurnDirection.LEFT),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)),
+                        new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT)),
                         false
                 ),
                 Arguments.of(
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.RIGHT),
-                        new DirectionTurnPair(CompassDirection.WEST, TurnDirection.LEFT),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT)),
+                        new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.LEFT)),
                         true
                 ),
                 Arguments.of(
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.STRAIGHT),
-                        new DirectionTurnPair(CompassDirection.WEST, TurnDirection.STRAIGHT),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.STRAIGHT)),
+                        new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.STRAIGHT)),
                         true
                 ),
                 Arguments.of(
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.STRAIGHT),
-                        new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.STRAIGHT)),
+                        new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)),
                         false
                 )
         );

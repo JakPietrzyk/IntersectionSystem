@@ -9,9 +9,23 @@ public class CollisionDetector {
                                               DirectionTurnPair b) {
         CompassDirection directionA = a.compassDirection();
         CompassDirection directionB = b.compassDirection();
-        TurnDirection turnA = a.turnDirection();
-        TurnDirection turnB = b.turnDirection();
 
+        for (var turnDirectionA : a.turnDirections()) {
+            for (var turnDirectionB : b.turnDirections()) {
+                if (doSimpleDirectionsCollide(directionA, directionB, turnDirectionA, turnDirectionB)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean doSimpleDirectionsCollide(
+            CompassDirection directionA,
+            CompassDirection directionB,
+            TurnDirection turnA,
+            TurnDirection turnB) {
         if (directionA == directionB) {
             return false;
         }

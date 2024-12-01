@@ -3,7 +3,6 @@ package com.trafficmanagement.intersection.controllers.lightcontrollers;
 import com.trafficmanagement.intersection.components.Road;
 import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.TrafficConfig;
-import com.trafficmanagement.intersection.constants.TurnDirection;
 import com.trafficmanagement.intersection.controllers.StarvationCounterManager;
 import com.trafficmanagement.intersection.models.DirectionTurnPair;
 import com.trafficmanagement.intersection.services.VehicleCounter;
@@ -11,8 +10,6 @@ import com.trafficmanagement.intersection.services.directionsselectors.Direction
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,15 +24,17 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         super(roads);
         logger.info("Initializing Starvation Counters");
         VehicleCounter vehicleCounter = new VehicleCounter(roads);
-
+        var allRoadsLines = roads.entrySet().stream().flatMap(entry -> entry.getValue().getRoadLineLights().keySet().stream()
+                .map(roadLine -> new DirectionTurnPair(entry.getKey(), roadLine.getAllowedDirections())))
+                .collect(Collectors.toSet());
         this.starvationCounterManager = new StarvationCounterManager(roads, vehicleCounter);
-        this.directionSelector = new DirectionSelector(starvationCounterManager, vehicleCounter);
+        this.directionSelector = new DirectionSelector(allRoadsLines, starvationCounterManager, vehicleCounter);
     }
 
     @Override
     public void makeStep() {
         stepCounter++;
-        starvationCounterManager.updateStarvationCounters(currentCompassDirections, currentTurnDirection);
+        starvationCounterManager.updateStarvationCounters(currentDirections);
 
         if (stepCounter >= TrafficConfig.STEPS_BEFORE_LIGHTS_SWITCH) {
             logger.info("Changing lights");
@@ -46,45 +45,22 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
     }
 
     private void changeLights() {
-        List<DirectionTurnPair> selectedDirections = directionSelector.getDirectionsToHandle();
+        Set<DirectionTurnPair> selectedDirections = directionSelector.getDirectionsToHandle();
         switchLights(selectedDirections);
     }
 
-    private void switchLights(List<DirectionTurnPair> newDirections) {
-        lightsSwitcher.switchLightsToRedForCompassDirections(currentCompassDirections);
-        updateCurrentDirections(newDirections);
+    private void switchLights(Set<DirectionTurnPair> newDirections) {
+        lightsSwitcher.switchLightsToRedForCompassDirections(
+                currentDirections.stream().map(DirectionTurnPair::compassDirection).collect(Collectors.toSet())
+        );
+        currentDirections = newDirections;
 
         for (var directionTurnPair : newDirections) {
             starvationCounterManager.clearStarvationForDirection(directionTurnPair);
-            lightsSwitcher.switchLightsToGreenForDirections(directionTurnPair.compassDirection(),
-                    directionTurnPair.turnDirection());
+            lightsSwitcher.switchLightsToGreenForRoadLines(directionTurnPair);
         }
 
-        logger.info("CurrentCompassDirections: {}, CurrentTurnDirections: {}", currentCompassDirections,
-                currentTurnDirection);
-    }
-
-    private void updateCurrentDirections(List<DirectionTurnPair> newDirections) {
-        currentCompassDirections = newDirections.stream()
-                .map(DirectionTurnPair::compassDirection)
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(CompassDirection.class)));
-        currentTurnDirection = newDirections.stream()
-                .map(DirectionTurnPair::turnDirection)
-                .collect(Collectors.toCollection(() -> EnumSet.noneOf(TurnDirection.class)));
-
-        addDirectionsIfRoadLineAllowsMore(newDirections);
-    }
-
-    private void addDirectionsIfRoadLineAllowsMore(List<DirectionTurnPair> newDirections) {
-        for (var entry : newDirections) {
-            CompassDirection direction = entry.compassDirection();
-            TurnDirection primaryTurn = entry.turnDirection();
-
-            Set<TurnDirection> possibleTurns = roads.get(direction)
-                    .getAllowedDirectionsForTurn(primaryTurn);
-
-            currentTurnDirection.addAll(possibleTurns);
-        }
+        logger.info("Current directions: {}", newDirections);
     }
 }
 

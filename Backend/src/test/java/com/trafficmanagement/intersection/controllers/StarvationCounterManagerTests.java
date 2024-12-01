@@ -1,6 +1,8 @@
 package com.trafficmanagement.intersection.controllers;
 
 import com.trafficmanagement.intersection.components.Road;
+import com.trafficmanagement.intersection.components.TrafficLights;
+import com.trafficmanagement.intersection.components.roadlines.AllDirectionsRoadLine;
 import com.trafficmanagement.intersection.constants.CompassDirection;
 import com.trafficmanagement.intersection.constants.TurnDirection;
 import com.trafficmanagement.intersection.models.DirectionTurnPair;
@@ -10,9 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -25,12 +26,16 @@ class StarvationCounterManagerTest {
 
     private StarvationCounterManager starvationCounterManager;
 
+    private final Set<TurnDirection> allDirections = Set.of(TurnDirection.STRAIGHT, TurnDirection.LEFT, TurnDirection.RIGHT);
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        when(mockRoad.getAllowedDirections()).thenReturn(
-                List.of(TurnDirection.STRAIGHT, TurnDirection.LEFT, TurnDirection.RIGHT));
+        when(mockRoad.getAllowedDirections()).thenReturn(allDirections);
+        when(mockRoad.getRoadLineLights()).thenReturn(Map.of(
+                new AllDirectionsRoadLine(), new TrafficLights()
+        ));
 
         Map<CompassDirection, Road> roads = Map.of(
                 CompassDirection.NORTH, mockRoad,
@@ -46,10 +51,8 @@ class StarvationCounterManagerTest {
         var starvationCounters = starvationCounterManager.getStarvationCounters();
 
         assertEquals(3, starvationCounters.size());
-        for (Map<TurnDirection, Integer> turnCounters : starvationCounters.values()) {
-            for (TurnDirection turnDirection : TurnDirection.values()) {
-                assertEquals(0, turnCounters.get(turnDirection));
-            }
+        for (var counter : starvationCounters.values()) {
+            assertEquals(0, counter);
         }
     }
 
@@ -57,68 +60,66 @@ class StarvationCounterManagerTest {
     void shouldNotUpdateStarvationCountersWhenRoadLineEmpty() {
         when(mockVehicleCounter.calculateVehiclesOnEachRoadLine())
                 .thenReturn(Map.of(
-                        CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 0, TurnDirection.STRAIGHT, 1),
-                        CompassDirection.SOUTH, Map.of(TurnDirection.LEFT, 1, TurnDirection.STRAIGHT, 0)
+                        new DirectionTurnPair(CompassDirection.NORTH, allDirections), 0,
+                        new DirectionTurnPair(CompassDirection.SOUTH, allDirections), 1
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class),
-                EnumSet.noneOf(TurnDirection.class));
+        starvationCounterManager.updateStarvationCounters(Set.of());
 
         var starvationCounters = starvationCounterManager.getStarvationCounters();
-        assertEquals(0, starvationCounters.get(CompassDirection.NORTH).get(TurnDirection.LEFT));
-        assertEquals(1, starvationCounters.get(CompassDirection.NORTH).get(TurnDirection.STRAIGHT));
-        assertEquals(1, starvationCounters.get(CompassDirection.SOUTH).get(TurnDirection.LEFT));
-        assertEquals(0, starvationCounters.get(CompassDirection.SOUTH).get(TurnDirection.STRAIGHT));
+        assertEquals(0, starvationCounters.get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
+        assertEquals(1, starvationCounters.get(new DirectionTurnPair(CompassDirection.SOUTH, allDirections)));
     }
 
     @Test
     void shouldUpdateStarvationCountersWhenRoadLineNotEmpty() {
         when(mockVehicleCounter.calculateVehiclesOnEachRoadLine())
                 .thenReturn(Map.of(
-                        CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 2)
+                        new DirectionTurnPair(CompassDirection.NORTH, allDirections), 2
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class),
-                EnumSet.noneOf(TurnDirection.class));
+        starvationCounterManager.updateStarvationCounters(Set.of());
 
         var starvationCounters = starvationCounterManager.getStarvationCounters();
-        assertEquals(1, starvationCounters.get(CompassDirection.NORTH).get(TurnDirection.LEFT));
+        assertEquals(1, starvationCounters.get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
     }
 
     @Test
     void shouldClearStarvationForDirection() {
         when(mockVehicleCounter.calculateVehiclesOnEachRoadLine())
                 .thenReturn(Map.of(
-                        CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 1)
+                        new DirectionTurnPair(CompassDirection.NORTH, allDirections), 1
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.noneOf(CompassDirection.class),
-                EnumSet.noneOf(TurnDirection.class));
+        starvationCounterManager.updateStarvationCounters(Set.of());
         assertEquals(1,
-                starvationCounterManager.getStarvationCounters().get(CompassDirection.NORTH).get(TurnDirection.LEFT));
+                starvationCounterManager.getStarvationCounters().get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
 
         starvationCounterManager.clearStarvationForDirection(
-                new DirectionTurnPair(CompassDirection.NORTH, TurnDirection.LEFT));
+                new DirectionTurnPair(CompassDirection.NORTH, allDirections));
         assertEquals(0,
-                starvationCounterManager.getStarvationCounters().get(CompassDirection.NORTH).get(TurnDirection.LEFT));
+                starvationCounterManager.getStarvationCounters().get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
     }
 
     @Test
     void shouldAddStarvationForInactiveDirections() {
         when(mockVehicleCounter.calculateVehiclesOnEachRoadLine())
                 .thenReturn(Map.of(
-                        CompassDirection.SOUTH, Map.of(TurnDirection.STRAIGHT, 1),
-                        CompassDirection.NORTH, Map.of(TurnDirection.LEFT, 1),
-                        CompassDirection.WEST, Map.of(TurnDirection.STRAIGHT, 1)
+                        new DirectionTurnPair(CompassDirection.SOUTH, allDirections), 1,
+                        new DirectionTurnPair(CompassDirection.NORTH, allDirections), 1,
+                        new DirectionTurnPair(CompassDirection.WEST, allDirections), 1
                 ));
 
-        starvationCounterManager.updateStarvationCounters(EnumSet.of(CompassDirection.SOUTH),
-                EnumSet.of(TurnDirection.STRAIGHT));
+        starvationCounterManager.updateStarvationCounters(
+                Set.of(
+                        new DirectionTurnPair(CompassDirection.SOUTH, allDirections)
+                )
+        );
 
         var starvationCounters = starvationCounterManager.getStarvationCounters();
-        assertEquals(0, starvationCounters.get(CompassDirection.SOUTH).get(TurnDirection.STRAIGHT));
-        assertEquals(1, starvationCounters.get(CompassDirection.NORTH).get(TurnDirection.LEFT));
-        assertEquals(1, starvationCounters.get(CompassDirection.WEST).get(TurnDirection.STRAIGHT));
+        assertEquals(0, starvationCounters.get(new DirectionTurnPair(CompassDirection.SOUTH, allDirections)));
+        assertEquals(1, starvationCounters.get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
+        assertEquals(1, starvationCounters.get(new DirectionTurnPair(CompassDirection.WEST, allDirections)));
 
     }
 }

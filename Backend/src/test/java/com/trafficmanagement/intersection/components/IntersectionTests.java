@@ -21,6 +21,9 @@ class IntersectionTests {
 
     @BeforeEach
     public void setUp() {
+        var southStraightTrafficLights = new TrafficLights();
+        southStraightTrafficLights.setGreenLight();
+
         this.roads = Map.of(
                 CompassDirection.NORTH, new Road(Map.of(
                         new LeftTurnRoadLine(), new TrafficLights(),
@@ -32,7 +35,7 @@ class IntersectionTests {
                 )),
                 CompassDirection.SOUTH, new Road(Map.of(
                         new LeftTurnRoadLine(), new TrafficLights(),
-                        new StraightOrRightRoadLine(), new TrafficLights()
+                        new StraightOrRightRoadLine(), southStraightTrafficLights
                 )),
                 CompassDirection.WEST, new Road(Map.of(
                         new LeftTurnRoadLine(), new TrafficLights(),
