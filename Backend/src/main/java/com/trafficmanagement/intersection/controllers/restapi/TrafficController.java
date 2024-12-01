@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
 import java.util.UUID;
 
 
@@ -48,8 +47,9 @@ public class TrafficController {
 
     @PostMapping("/addVehicle")
     public void addVehicle(@RequestBody CreateVehicles vehicles) {
-        for(int i = 0; i < vehicles.numberOfVehicles(); i++) {
-            var vehicleToAdd = new Vehicle(UUID.randomUUID().toString(), vehicles.startRoad(), vehicles.turnDirection());
+        for (int i = 0; i < vehicles.numberOfVehicles(); i++) {
+            var vehicleToAdd = new Vehicle(UUID.randomUUID().toString(), vehicles.startRoad(),
+                    vehicles.turnDirection());
             intersection.addVehicle(vehicleToAdd);
         }
     }

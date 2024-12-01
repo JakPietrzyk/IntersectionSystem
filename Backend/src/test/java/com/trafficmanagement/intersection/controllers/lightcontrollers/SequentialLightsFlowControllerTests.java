@@ -50,13 +50,15 @@ class SequentialLightsFlowControllerTests {
 
     @Test
     void shouldSwitchLightsAfterDefinedSteps() {
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         for (int i = 0; i < STEPS_BEFORE_LIGHTS_SWITCH + 1; i++) {
             sequentialLightsFlowController.makeStep();
         }
 
-        assertEquals(LightColor.RED, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.RED, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
     }
 
     @Test

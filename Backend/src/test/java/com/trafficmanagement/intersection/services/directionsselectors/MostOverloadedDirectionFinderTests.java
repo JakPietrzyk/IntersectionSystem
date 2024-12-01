@@ -40,7 +40,8 @@ class MostOverloadedDirectionFinderTest {
         Set<DirectionTurnPair> result = mostOverloadedDirectionFinder.findMostNeededDirections(input);
 
         assertEquals(1, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), result.iterator().next());
+        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)),
+                result.iterator().next());
     }
 
     @Test

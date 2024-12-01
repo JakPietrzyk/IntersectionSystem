@@ -24,8 +24,10 @@ public class LightsControllerWithIntensityMonitoring extends LightsController {
         super(roads);
         logger.info("Initializing Starvation Counters");
         VehicleCounter vehicleCounter = new VehicleCounter(roads);
-        var allRoadsLines = roads.entrySet().stream().flatMap(entry -> entry.getValue().getRoadLineLights().keySet().stream()
-                .map(roadLine -> new DirectionTurnPair(entry.getKey(), roadLine.getAllowedDirections())))
+        var allRoadsLines = roads.entrySet()
+                .stream()
+                .flatMap(entry -> entry.getValue().getRoadLineLights().keySet().stream()
+                        .map(roadLine -> new DirectionTurnPair(entry.getKey(), roadLine.getAllowedDirections())))
                 .collect(Collectors.toSet());
         this.starvationCounterManager = new StarvationCounterManager(roads, vehicleCounter);
         this.directionSelector = new DirectionSelector(allRoadsLines, starvationCounterManager, vehicleCounter);

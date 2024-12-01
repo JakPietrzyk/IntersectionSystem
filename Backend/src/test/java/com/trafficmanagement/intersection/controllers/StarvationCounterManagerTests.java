@@ -26,7 +26,8 @@ class StarvationCounterManagerTest {
 
     private StarvationCounterManager starvationCounterManager;
 
-    private final Set<TurnDirection> allDirections = Set.of(TurnDirection.STRAIGHT, TurnDirection.LEFT, TurnDirection.RIGHT);
+    private final Set<TurnDirection> allDirections = Set.of(TurnDirection.STRAIGHT, TurnDirection.LEFT,
+            TurnDirection.RIGHT);
 
     @BeforeEach
     void setUp() {
@@ -93,12 +94,14 @@ class StarvationCounterManagerTest {
 
         starvationCounterManager.updateStarvationCounters(Set.of());
         assertEquals(1,
-                starvationCounterManager.getStarvationCounters().get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
+                starvationCounterManager.getStarvationCounters()
+                        .get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
 
         starvationCounterManager.clearStarvationForDirection(
                 new DirectionTurnPair(CompassDirection.NORTH, allDirections));
         assertEquals(0,
-                starvationCounterManager.getStarvationCounters().get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
+                starvationCounterManager.getStarvationCounters()
+                        .get(new DirectionTurnPair(CompassDirection.NORTH, allDirections)));
     }
 
     @Test

@@ -56,7 +56,8 @@ class DirectionSelectorTest {
         Set<DirectionTurnPair> result = directionSelector.getDirectionsToHandle();
 
         assertEquals(1, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)), result.iterator().next());
+        assertEquals(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)),
+                result.iterator().next());
     }
 
     @Test
@@ -78,6 +79,7 @@ class DirectionSelectorTest {
         Set<DirectionTurnPair> result = directionSelector.getDirectionsToHandle();
 
         assertEquals(1, result.size());
-        assertEquals(new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.LEFT)), result.iterator().next());
+        assertEquals(new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.LEFT)),
+                result.iterator().next());
     }
 }

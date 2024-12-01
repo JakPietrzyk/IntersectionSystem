@@ -58,8 +58,10 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
     @Test
     void shouldNotSwitchLightsIfOtherRoadsAreEmpty() {
         int numberOfVehicles = 50;
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         addVehiclesToDirection(numberOfVehicles, CompassDirection.SOUTH, CompassDirection.NORTH);
         addVehiclesToDirection(numberOfVehicles, CompassDirection.NORTH, CompassDirection.SOUTH);
@@ -67,9 +69,11 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
         while (numberOfVehicles > 0) {
             makeStepsToSwitchLights();
             assertEquals(LightColor.GREEN,
-                    roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+                    roads.get(CompassDirection.NORTH)
+                            .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
             assertEquals(LightColor.GREEN,
-                    roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+                    roads.get(CompassDirection.SOUTH)
+                            .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
             numberOfVehicles -= 5;
         }
     }
@@ -90,8 +94,10 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
 
     @Test
     void shouldSwitchLightsIfOtherLineIsWaitingToGoStraight() {
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         addVehiclesToDirection(1, CompassDirection.SOUTH, CompassDirection.NORTH);
         addVehiclesToDirection(50, CompassDirection.NORTH, CompassDirection.SOUTH);
@@ -100,22 +106,30 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
         for (int i = 0; i < STARVATION_THRESHOLD; i += 5) {
             makeStepsToSwitchLights();
             assertEquals(LightColor.GREEN,
-                    roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-            assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.LEFT)));
+                    roads.get(CompassDirection.NORTH)
+                            .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+            assertEquals(LightColor.GREEN,
+                    roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.LEFT)));
             assertEquals(LightColor.RED,
-                    roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+                    roads.get(CompassDirection.SOUTH)
+                            .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
         }
         makeStepsToSwitchLights();
 
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-        assertEquals(LightColor.RED, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.LEFT)));
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.RED,
+                roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.LEFT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
     }
 
     @Test
     void shouldSwitchLightsIfOtherLineIsWaitingToGoLeft() {
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         addVehiclesToDirection(1, CompassDirection.NORTH, CompassDirection.EAST);
         addVehiclesToDirection(50, CompassDirection.SOUTH, CompassDirection.NORTH);
@@ -125,11 +139,14 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
             makeStepsToSwitchLights();
         }
 
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.LEFT)));
-        assertEquals(LightColor.RED, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN,
+                roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.LEFT)));
+        assertEquals(LightColor.RED, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         var southLeft = roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.LEFT));
-        var northStraightRight = roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT));
+        var northStraightRight = roads.get(CompassDirection.NORTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT));
         assertTrue(
                 (LightColor.GREEN == southLeft && LightColor.RED == northStraightRight) ||
                         (LightColor.RED == southLeft && LightColor.GREEN == northStraightRight)
@@ -138,16 +155,20 @@ class LightsControllerWithIntensityMonitoringIntegrationTests {
 
     @Test
     void shouldSwitchLightsToStraightOnWestAndEast() {
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.NORTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.SOUTH)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
 
         addVehiclesToDirection(50, CompassDirection.EAST, CompassDirection.NORTH);
         addVehiclesToDirection(50, CompassDirection.WEST, CompassDirection.SOUTH);
 
         makeStepsToSwitchLights();
 
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.EAST).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
-        assertEquals(LightColor.GREEN, roads.get(CompassDirection.WEST).getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.EAST)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
+        assertEquals(LightColor.GREEN, roads.get(CompassDirection.WEST)
+                .getCurrentLightColor(Set.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)));
     }
 
 

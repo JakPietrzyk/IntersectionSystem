@@ -16,16 +16,20 @@ public class SequentialLightsFlowController extends LightsController {
 
     private final List<Set<DirectionTurnPair>> orderOfDirections = List.of(
             Set.of(
-                    new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)),
-                    new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT))
+                    new DirectionTurnPair(CompassDirection.NORTH,
+                            EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)),
+                    new DirectionTurnPair(CompassDirection.SOUTH,
+                            EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT))
             ),
             Set.of(
                     new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT)),
                     new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT))
             ),
             Set.of(
-                    new DirectionTurnPair(CompassDirection.WEST, EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)),
-                    new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT))
+                    new DirectionTurnPair(CompassDirection.WEST,
+                            EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT)),
+                    new DirectionTurnPair(CompassDirection.EAST,
+                            EnumSet.of(TurnDirection.STRAIGHT, TurnDirection.RIGHT))
             ),
             Set.of(
                     new DirectionTurnPair(CompassDirection.EAST, EnumSet.of(TurnDirection.LEFT)),

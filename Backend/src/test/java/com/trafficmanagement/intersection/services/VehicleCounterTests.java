@@ -80,9 +80,11 @@ class VehicleCounterTest {
 
         assertEquals(3, result.size());
 
-        assertEquals(5, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
+        assertEquals(5, result.get(new DirectionTurnPair(CompassDirection.NORTH,
+                EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
         assertEquals(4, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
-        assertEquals(8, result.get(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
+        assertEquals(8, result.get(new DirectionTurnPair(CompassDirection.SOUTH,
+                EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
     }
 
     @Test
@@ -93,9 +95,11 @@ class VehicleCounterTest {
         Map<DirectionTurnPair, Integer> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
 
         assertEquals(3, result.size());
-        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH,
+                EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
         assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
-        assertEquals(8, result.get(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
+        assertEquals(8, result.get(new DirectionTurnPair(CompassDirection.SOUTH,
+                EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
     }
 
     @Test
@@ -107,9 +111,11 @@ class VehicleCounterTest {
         Map<DirectionTurnPair, Integer> result = vehicleCounter.calculateVehiclesOnEachRoadLine();
 
         assertEquals(3, result.size());
-        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH,
+                EnumSet.of(TurnDirection.RIGHT, TurnDirection.STRAIGHT))));
         assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.NORTH, EnumSet.of(TurnDirection.LEFT))));
-        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.SOUTH, EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
+        assertEquals(0, result.get(new DirectionTurnPair(CompassDirection.SOUTH,
+                EnumSet.of(TurnDirection.LEFT, TurnDirection.STRAIGHT, TurnDirection.RIGHT))));
 
     }
 

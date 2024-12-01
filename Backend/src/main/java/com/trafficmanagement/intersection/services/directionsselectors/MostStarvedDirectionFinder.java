@@ -67,7 +67,9 @@ public class MostStarvedDirectionFinder {
         for (var entry : directionVehicleCounts.entrySet()) {
             DirectionTurnPair candidate = entry.getKey();
             if (directionVehicleCounts.getOrDefault(candidate, 0) > 0 &&
-                    result.stream().noneMatch(existing -> existing.equals(candidate) || doDirectionsCollide(existing, candidate))) {
+                    result.stream()
+                            .noneMatch(existing -> existing.equals(candidate) || doDirectionsCollide(existing,
+                                    candidate))) {
                 result.add(candidate);
             }
         }
